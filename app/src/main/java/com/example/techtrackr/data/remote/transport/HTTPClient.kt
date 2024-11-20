@@ -1,6 +1,7 @@
 package com.example.techtrackr.data.remote.transport
 
 import android.util.Log
+import com.example.techtrackr.utils.BASE_API_URL
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit
  */
 object HTTPClient {
 
-    private const val BASE_URL = "https://api.example.com/" // Replace with your actual base URL
+    private const val BASE_URL = BASE_API_URL // Replace with your actual base URL
     private const val TIMEOUT_SECONDS: Long = 10
     private const val RETRIES: Int = 3
     private const val BACKOFF_FACTOR_MS: Long = 300
@@ -27,9 +28,8 @@ object HTTPClient {
         val loggingInterceptor = HttpLoggingInterceptor { message ->
             Log.d("HTTPClient", message)
         }.apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = HttpLoggingInterceptor.Level.HEADERS // Change from Level.BODY
         }
-
         // Retry interceptor with exponential backoff
         val retryInterceptor = Interceptor { chain ->
             var attempt = 0
@@ -132,7 +132,7 @@ object HTTPClient {
             val responseBody = response.body?.string()
             Log.i("HTTPClient", "GET ${response.request.url} succeeded with status ${response.code}")
 
-            return responseBody?.let {
+            val test = responseBody?.let {
                 try {
                     JSONObject(it)
                 } catch (e: Exception) {
@@ -140,6 +140,8 @@ object HTTPClient {
                     null
                 }
             }
+            Log.i("HTTPClient", "Response body: $responseBody")
+            return test
         }
     }
 
