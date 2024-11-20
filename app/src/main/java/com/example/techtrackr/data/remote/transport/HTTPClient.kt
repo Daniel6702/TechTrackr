@@ -1,7 +1,6 @@
 package com.example.techtrackr.data.remote.transport
 
 import android.util.Log
-import com.example.techtrackr.utils.BASE_API_URL
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.logging.HttpLoggingInterceptor
@@ -10,16 +9,16 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 /**
- * The HTTPClient class is a reusable HTTP client designed for API calls with built-in retry functionality and error handling.
+ * The HTTPClient singleton is a reusable HTTP client designed for API calls with built-in retry functionality and error handling.
  * It manages HTTP interactions more reliably by handling network errors, retrying failed requests, and logging important events.
  */
-class HTTPClient(
-    private val baseUrl: String,
-    private val timeout: Long = 10, // seconds
-    private val retries: Int = 3,
-    private val backoffFactor: Long = 300, // milliseconds
-    private val statusForRetry: List<Int> = listOf(429, 500, 502, 503, 504)
-) {
+object HTTPClient {
+
+    private const val BASE_URL = "https://api.example.com/" // Replace with your actual base URL
+    private const val TIMEOUT_SECONDS: Long = 10
+    private const val RETRIES: Int = 3
+    private const val BACKOFF_FACTOR_MS: Long = 300
+    private val STATUS_FOR_RETRY = listOf(429, 500, 502, 503, 504)
 
     private val client: OkHttpClient
 
@@ -38,10 +37,10 @@ class HTTPClient(
             var response: Response? = null
             var exception: IOException? = null
 
-            while (attempt < retries) {
+            while (attempt < RETRIES) {
                 try {
                     response = chain.proceed(request)
-                    if (!statusForRetry.contains(response.code)) {
+                    if (!STATUS_FOR_RETRY.contains(response.code)) {
                         return@Interceptor response
                     }
                 } catch (e: IOException) {
@@ -49,8 +48,8 @@ class HTTPClient(
                 }
 
                 attempt++
-                val backoff = backoffFactor * (1 shl (attempt - 1)) // Exponential backoff
-                Log.w("HTTPClient", "Request failed - Attempt $attempt/$retries. Retrying in ${backoff}ms.")
+                val backoff = BACKOFF_FACTOR_MS * (1 shl (attempt - 1)) // Exponential backoff
+                Log.w("HTTPClient", "Request failed - Attempt $attempt/$RETRIES. Retrying in ${backoff}ms.")
                 try {
                     Thread.sleep(backoff)
                 } catch (e: InterruptedException) {
@@ -65,9 +64,9 @@ class HTTPClient(
 
         // Build OkHttpClient with interceptors and timeout settings
         client = OkHttpClient.Builder()
-            .connectTimeout(timeout, TimeUnit.SECONDS)
-            .readTimeout(timeout, TimeUnit.SECONDS)
-            .writeTimeout(timeout, TimeUnit.SECONDS)
+            .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .addInterceptor(retryInterceptor)
             .addInterceptor(loggingInterceptor)
             .build()
@@ -89,8 +88,7 @@ class HTTPClient(
         headers: Map<String, String>? = null
     ): JSONObject? {
         // Build the full URL
-        val urlBuilder = baseUrl.toHttpUrlOrNull()?.newBuilder()
-            ?.addPathSegments(endpoint.trimStart('/'))
+        val urlBuilder = (BASE_URL + endpoint).toHttpUrlOrNull()?.newBuilder()
             ?: throw IllegalArgumentException("Invalid base URL or endpoint")
 
         // Add query parameters
@@ -163,13 +161,4 @@ class HTTPClient(
             get(endpoint, params, headers)
         }
     }
-
-    // You can similarly implement POST, PUT, DELETE methods as needed
 }
-
-val httpClient = HTTPClient(
-    baseUrl = BASE_API_URL,
-    timeout = 10,
-    retries = 3,
-    backoffFactor = 300
-)
