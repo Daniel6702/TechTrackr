@@ -13,6 +13,7 @@ object Client {
     // Instances of ProductAPI and SearchAPI
     private val productAPI = ProductAPI()
     private val searchAPI = SearchAPI()
+    private val categoryAPI = CategoryAPI()
 
     // ===========================
     // ProductAPI Methods Delegation
@@ -232,5 +233,139 @@ object Client {
         return Pair(suggestions, results)
     }
 
-    // You can add more combined methods or utility functions here as needed.
+    /**
+     * Retrieves the top-level categories.
+     *
+     * @return A JSONObject containing the top categories or null if the request fails.
+     * @throws IOException If a network or other I/O error occurs.
+     */
+    @Throws(IOException::class)
+    fun getTopCategories(): JSONObject? {
+        return categoryAPI.getTopCategories()
+    }
+
+    /**
+     * Retrieves all categories.
+     *
+     * @return A JSONObject containing all categories or null if the request fails.
+     * @throws IOException If a network or other I/O error occurs.
+     */
+    @Throws(IOException::class)
+    fun getAllCategories(): JSONObject? {
+        return categoryAPI.getAllCategories()
+    }
+
+    /**
+     * Retrieves extra content for a tree page based on category ID.
+     *
+     * @param categoryId The category ID.
+     * @return A JSONObject containing the extra content or null if the request fails.
+     * @throws IOException If a network or other I/O error occurs.
+     */
+    @Throws(IOException::class)
+    fun getTreePageExtraContent(categoryId: String): JSONObject? {
+        return categoryAPI.getTreePageExtraContent(categoryId)
+    }
+
+    /**
+     * Retrieves boards for a subcategory.
+     *
+     * @param subcategoryId The subcategory ID.
+     * @param size The number of boards to retrieve (default is 4).
+     * @return A JSONObject containing the boards or null if the request fails.
+     * @throws IOException If a network or other I/O error occurs.
+     */
+    @Throws(IOException::class)
+    fun getBoards(subcategoryId: String, size: Int = 4): JSONObject? {
+        return categoryAPI.getBoards(subcategoryId, size)
+    }
+
+    /**
+     * Retrieves category data based on category ID.
+     *
+     * @param categoryId The category ID.
+     * @return A JSONObject containing category data or null if the request fails.
+     * @throws IOException If a network or other I/O error occurs.
+     */
+    @Throws(IOException::class)
+    fun getCategoryData(categoryId: String): JSONObject? {
+        return categoryAPI.getCategoryData(categoryId)
+    }
+
+    /**
+     * Retrieves breadcrumbs for a category based on category ID.
+     *
+     * @param categoryId The category ID.
+     * @return A JSONObject containing breadcrumbs or null if the request fails.
+     * @throws IOException If a network or other I/O error occurs.
+     */
+    @Throws(IOException::class)
+    fun getBreadcrumbs(categoryId: String): JSONObject? {
+        return categoryAPI.getBreadcrumbs(categoryId)
+    }
+
+    /**
+     * Retrieves keywords for a category based on category ID.
+     *
+     * @param categoryId The category ID.
+     * @return A JSONObject containing keywords or null if the request fails.
+     * @throws IOException If a network or other I/O error occurs.
+     */
+    @Throws(IOException::class)
+    fun getKeywords(categoryId: String): JSONObject? {
+        return categoryAPI.getKeywords(categoryId)
+    }
+
+    /**
+     * Retrieves keywords for a subcategory based on subcategory ID.
+     *
+     * @param subcategoryId The subcategory ID.
+     * @return A JSONObject containing subcategory keywords or null if the request fails.
+     * @throws IOException If a network or other I/O error occurs.
+     */
+    @Throws(IOException::class)
+    fun getKeywordsSub(subcategoryId: String): JSONObject? {
+        return categoryAPI.getKeywordsSub(subcategoryId)
+    }
+
+    /**
+     * Retrieves popular products for a category based on category ID.
+     *
+     * @param categoryId The category ID.
+     * @return A JSONObject containing popular products or null if the request fails.
+     * @throws IOException If a network or other I/O error occurs.
+     */
+    @Throws(IOException::class)
+    fun getPopularProducts(categoryId: String): JSONObject? {
+        return categoryAPI.getPopularProducts(categoryId)
+    }
+
+    /**
+     * Retrieves products for a subcategory with optional filters.
+     *
+     * @param subcategoryId The subcategory ID.
+     * @param size The number of products to retrieve (default is 10).
+     * @param filters A list of filters in the format "key=value".
+     * @return A JSONObject containing products or null if the request fails.
+     * @throws IOException If a network or other I/O error occurs.
+     */
+    @Throws(IOException::class)
+    fun getProducts(subcategoryId: String, size: Int = 10, filters: List<String> = emptyList()): JSONObject? {
+        return categoryAPI.getProducts(subcategoryId, size, filters)
+    }
+
+    /**
+     * Retrieves guiding content for a subcategory.
+     *
+     * @param subcategoryId The subcategory ID.
+     * @param size The number of content items to retrieve (default is 10).
+     * @return A JSONObject containing guiding content or null if the request fails.
+     * @throws IOException If a network or other I/O error occurs.
+     */
+    @Throws(IOException::class)
+    fun getGuidingContent(subcategoryId: String, size: Int = 10): JSONObject? {
+        return categoryAPI.getGuidingContent(subcategoryId, size)
+    }
+
+    // ... (Any additional combined methods or utilities) ...
 }
