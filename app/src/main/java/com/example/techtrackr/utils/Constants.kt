@@ -12,3 +12,5 @@ val MAIN_CATEGORIES = mapOf(
     1604 to "Hi-Fi-udstyr",
     17 to "Foto-Video"
 )
+
+const val BASE_URL = "https://www.pricerunner.dk/"
