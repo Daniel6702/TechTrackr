@@ -11,6 +11,9 @@ composeBom = "2024.04.01"
 okhttp = "4.10.0"
 json = "20230227"
 coroutines = "1.6.0"
+googleGmsGoogleServices = "4.4.2"
+firebaseAuth = "23.1.0"
+navigationCompose = "2.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,9 +35,11 @@ okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-i
 json = { group = "org.json", name = "json", version.ref = "json" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 
