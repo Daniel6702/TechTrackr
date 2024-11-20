@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "924820605748",
+    "project_id": "techtrackr-d6033",
+    "storage_bucket": "techtrackr-d6033.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924820605748:android:13078fd57c390beceef361",
+        "android_client_info": {
+          "package_name": "com.example.techtrackr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoTAlCJRFfugsKqOk62VIMAbhqabGo7Uo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
