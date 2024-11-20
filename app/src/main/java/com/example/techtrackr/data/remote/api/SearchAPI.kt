@@ -38,7 +38,7 @@ class SearchAPI {
      * @throws IOException If a network or other I/O error occurs.
      */
     @Throws(IOException::class)
-    fun search(
+    suspend fun search(
         searchQuery: String,
         size: Int = 10,
         suggestionsActive: Boolean = true,
@@ -54,7 +54,7 @@ class SearchAPI {
             "suggestionReverted" to suggestionReverted.toString()
         )
         Log.d("SearchAPI", "Performing search from endpoint: $endpoint with params: $params")
-        return HTTPClient.get(endpoint, params)
+        return HTTPClient.getAsync(endpoint, params)
     }
 
     /**

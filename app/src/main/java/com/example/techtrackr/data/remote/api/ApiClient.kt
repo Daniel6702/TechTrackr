@@ -182,7 +182,7 @@ object Client {
      * @throws IOException If a network or other I/O error occurs.
      */
     @Throws(IOException::class)
-    fun search(
+    suspend fun search(
         searchQuery: String,
         size: Int = 10,
         suggestionsActive: Boolean = true,
@@ -227,7 +227,7 @@ object Client {
      * @throws IOException If a network or other I/O error occurs.
      */
     @Throws(IOException::class)
-    fun getSearchData(searchQuery: String): Pair<JSONObject?, JSONObject?> {
+    suspend fun getSearchData(searchQuery: String): Pair<JSONObject?, JSONObject?> {
         val suggestions = suggest(searchQuery)
         val results = search(searchQuery)
         return Pair(suggestions, results)
