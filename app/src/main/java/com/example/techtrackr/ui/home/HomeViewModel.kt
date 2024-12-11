@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
+import com.example.techtrackr.data.model.Category
 import com.example.techtrackr.data.remote.api.Client
 
 class HomeViewModel : ViewModel() {
@@ -19,7 +20,10 @@ class HomeViewModel : ViewModel() {
 
     suspend fun performSearch() {
         Log.d("HomeViewModel", "Performing search for: ${_searchQuery.value}")
-        val data = apiClient.searchAsync(_searchQuery.value)
-        Log.d("HomeViewModel", "Search results: $data")
+        val data_json = apiClient.searchAsync(_searchQuery.value)
+        val categories = data_json?.getJSONArray("categories")
+        //for each category in categories convert it to a Category object
+
+        //Log.d("HomeViewModel", "Search results: $data")
     }
 }
