@@ -1,4 +1,4 @@
-package com.example.authenticationtesting.ui.theme
+package com.example.techtrackr.ui.theme
 
 import android.app.Activity
 import android.os.Build

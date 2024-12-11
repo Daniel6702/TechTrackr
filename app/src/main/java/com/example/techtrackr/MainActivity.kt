@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import androidx.navigation.compose.*
-import com.example.authenticationtesting.ui.theme.TechtrackrTheme
+import com.example.techtrackr.ui.theme.TechtrackrTheme
 
 
 class MainActivity : ComponentActivity() {
