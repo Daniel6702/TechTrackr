@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.techtrackr.data.shared.SharedDataViewModel
+import com.example.techtrackr.ui.category.CategoryList
 import com.example.techtrackr.ui.category.MainCategoryCard
 import com.example.techtrackr.utils.MAIN_CATEGORIES
 
@@ -24,6 +25,7 @@ fun DrawerContent(
     modifier: Modifier = Modifier
 ) {
     val categoriesState by sharedDataViewModel.categoriesState.collectAsState()
+    val navController = LocalNavController.current
 
     Column(
         modifier = modifier
@@ -77,24 +79,10 @@ fun DrawerContent(
                 .padding(vertical = 8.dp)
         )
 
-        if (categoriesState.isEmpty()) {
-            // Show loading indicator
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        } else {
-            MAIN_CATEGORIES.keys.forEach { id ->
-                val categoryResponse = categoriesState[id]
-                if (categoryResponse != null) {
-                    MainCategoryCard(
-                        category = categoryResponse,
-                        onCategoryClick = { /* handle clicks */ }
-                    )
-                }
-            }
-        }
+        // Use the CategoryList composable
+        CategoryList(
+            categoriesState = categoriesState,
+            navController = navController
+        )
     }
 }

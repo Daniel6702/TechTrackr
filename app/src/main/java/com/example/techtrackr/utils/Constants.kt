@@ -6,15 +6,14 @@ const val BASE_API_URL  = BASE_URL + "dk/api/search-compare-gateway/public/"
 
 val CATEGORY_DATA_URL: (String) -> String = { id -> "$BASE_API_URL/navigation/menu/DK/hierarchy/$id" }
 
+val POPULAR_PRODUCTS_URL: (String) -> String = { id -> "$BASE_API_URL/popularproducts/v2/DK/$id" }
+
 val MAIN_CATEGORIES = mapOf(
-    "t23" to "Computerudstyr",
-    "t22" to "Computere",
-    "t9" to "Computer-hardware",
-    "t20" to "Netvaerk",
-    "t24" to "Lagring",
-    "t1" to "Mobiltelefoner",
-    "t1604" to "Hi-Fi-udstyr",
-    "t17" to "Foto-Video"
+    "t1" to "Lyd & Billede",
+    "t2" to "Computer & Software",
+    "t4" to "Telefoni & Wearables",
+    "t17" to "Foto & Video",
+    "t19" to "Gaming & Underholdning",
 )
 
 //https://www.pricerunner.dk/dk/api/search-compare-gateway/public/navigation/menu/DK/hierarchy/t23

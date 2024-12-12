@@ -26,7 +26,6 @@ class SharedDataViewModel : ViewModel() {
     // Called after user logs in or when the app starts
     fun preloadData() {
         preloadCategories()
-        // preloadOtherDataSets()
     }
 
     private fun preloadCategories() {
@@ -44,7 +43,19 @@ class SharedDataViewModel : ViewModel() {
         }
     }
 
-    // Add more preload methods if necessary:
-    // private fun preloadOtherDataSets() { ... }
+    fun loadCategoryIfNeeded(categoryId: String) {
+        if (!categoriesState.value.containsKey(categoryId)) {
+            viewModelScope.launch {
+                try {
+                    val response = repository.getCategoryById(categoryId)
+                    val updatedMap = _categoriesState.value.toMutableMap()
+                    updatedMap[categoryId] = response
+                    _categoriesState.value = updatedMap
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
 }
 
