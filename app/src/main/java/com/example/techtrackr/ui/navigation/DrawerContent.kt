@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,8 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.techtrackr.data.shared.SharedDataViewModel
 import com.example.techtrackr.ui.category.CategoryList
-import com.example.techtrackr.ui.category.MainCategoryCard
-import com.example.techtrackr.utils.MAIN_CATEGORIES
 
 @Composable
 fun DrawerContent(
@@ -52,11 +51,15 @@ fun DrawerContent(
                 .padding(vertical = 8.dp)
         )
 
+        // Home Button Centered Horizontally
         Row(
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center, // Center contents horizontally
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onHomeClick() }
+                .clickable {
+                    onHomeClick()
+                }
                 .padding(vertical = 12.dp)
         ) {
             Icon(
@@ -79,10 +82,43 @@ fun DrawerContent(
                 .padding(vertical = 8.dp)
         )
 
-        // Use the CategoryList composable
         CategoryList(
             categoriesState = categoriesState,
             navController = navController
         )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Divider(
+            thickness = 1.dp,
+            color = Color.Gray,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        )
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    navController.navigate("watchlist")
+                }
+                .padding(vertical = 12.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.List,
+                contentDescription = "Watchlist",
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "Watchlist",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
