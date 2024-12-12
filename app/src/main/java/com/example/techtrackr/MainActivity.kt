@@ -1,46 +1,66 @@
+// MainActivity.kt
 package com.example.techtrackr
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.navigation.compose.rememberNavController
-import com.google.firebase.auth.FirebaseAuth
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.*
 import com.example.techtrackr.ui.theme.TechtrackrTheme
-
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
-
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             TechtrackrTheme {
-                // Set up Navigation
                 val navController = rememberNavController()
 
-                // Navigation host (the main entry point for composables)
-                NavHost(navController = navController, startDestination = "auth") {
+                // Determine start destination based on authentication status
+                val startDestination = if (auth.currentUser != null) "home" else "auth"
+
+                NavHost(navController = navController, startDestination = startDestination) {
                     composable("auth") {
-                        // Authentication screen Composable
+                        val viewModel: AuthViewModel = viewModel(
+                            factory = AuthViewModelFactory(auth, applicationContext)
+                        )
+                        val uiState by viewModel.uiState.collectAsState()
+
                         AuthenticationScreen(
-                            auth = auth,
-                            context = this@MainActivity, // Pass context to AuthenticationScreen
-                            onLoginSuccess = {
-                                // Navigate to Home Screen after successful login
-                                navController.navigate("home") {
-                                    // Pop up to the "auth" screen to prevent back navigation
-                                    popUpTo("auth") { inclusive = true }
+                            uiState = uiState,
+                            onEmailChange = viewModel::updateEmail,
+                            onPasswordChange = viewModel::updatePassword,
+                            onToggleMode = viewModel::toggleLoginMode,
+                            onLoginClick = {
+                                viewModel.loginUser { success ->
+                                    if (success) {
+                                        navController.navigate("home") {
+                                            popUpTo("auth") { inclusive = true }
+                                        }
+                                    }
                                 }
-                            }
+                            },
+                            onSignUpClick = { viewModel.signUpUser {} },
+                            onLoginAsGuestClick = {
+                                viewModel.loginAsGuest { success ->
+                                    if (success) {
+                                        navController.navigate("home") {
+                                            popUpTo("auth") { inclusive = true }
+                                        }
+                                    }
+                                }
+                            },
                         )
                     }
 
                     composable("home") {
-                        // Home Screen Composable
                         HomeScreen(
                             onLogout = {
                                 auth.signOut()
