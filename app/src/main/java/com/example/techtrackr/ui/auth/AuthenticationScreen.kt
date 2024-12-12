@@ -5,25 +5,23 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun AuthenticationScreen(
-    uiState: AuthUIState,
-    onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onToggleMode: () -> Unit,
-    onLoginClick: () -> Unit,
-    onSignUpClick: () -> Unit,
-    onLoginAsGuestClick: () -> Unit,
+    viewModel: AuthViewModel,
+    onNavigateToHome: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -41,7 +39,7 @@ fun AuthenticationScreen(
         Box(modifier = Modifier.fillMaxWidth()) {
             BasicTextField(
                 value = uiState.email,
-                onValueChange = onEmailChange,
+                onValueChange = { viewModel.updateEmail(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, Color.Gray, shape = MaterialTheme.shapes.small)
@@ -56,9 +54,7 @@ fun AuthenticationScreen(
                                 text = "Email",
                                 color = Color.Gray,
                                 style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier
-                                    .align(Alignment.CenterStart)
-                                    .padding(vertical = 0.dp) // Ensure no extra vertical padding
+                                modifier = Modifier.align(Alignment.CenterStart)
                             )
                         }
                         innerTextField()
@@ -73,7 +69,7 @@ fun AuthenticationScreen(
         Box(modifier = Modifier.fillMaxWidth()) {
             BasicTextField(
                 value = uiState.password,
-                onValueChange = onPasswordChange,
+                onValueChange = { viewModel.updatePassword(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, Color.Gray, shape = MaterialTheme.shapes.small)
@@ -89,9 +85,7 @@ fun AuthenticationScreen(
                                 text = "Password",
                                 color = Color.Gray,
                                 style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier
-                                    .align(Alignment.CenterStart)
-                                    .padding(vertical = 0.dp) // Ensure no extra vertical padding
+                                modifier = Modifier.align(Alignment.CenterStart)
                             )
                         }
                         innerTextField()
@@ -99,7 +93,6 @@ fun AuthenticationScreen(
                 }
             )
         }
-
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -113,9 +106,9 @@ fun AuthenticationScreen(
         Button(
             onClick = {
                 if (uiState.isLogin) {
-                    onLoginClick()
+                    viewModel.loginUser(onNavigateToHome)
                 } else {
-                    onSignUpClick()
+                    viewModel.signUpUser(onNavigateToHome)
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -126,7 +119,7 @@ fun AuthenticationScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         // Toggle between login and signup
-        TextButton(onClick = onToggleMode) {
+        TextButton(onClick = { viewModel.toggleLoginMode() }) {
             Text(text = if (uiState.isLogin) "Don't have an account? Sign up" else "Already have an account? Login")
         }
 
@@ -134,7 +127,7 @@ fun AuthenticationScreen(
 
         // Login as Guest
         OutlinedButton(
-            onClick = onLoginAsGuestClick,
+            onClick = { viewModel.loginAsGuest(onNavigateToHome) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login as Guest")

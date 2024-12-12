@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.*
 import com.example.techtrackr.ui.home.HomeScreen
@@ -25,79 +24,50 @@ class MainActivity : ComponentActivity() {
         setContent {
             TechtrackrTheme {
                 val navController = rememberNavController()
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.destination?.route
 
                 // Determine start destination based on authentication status
                 val startDestination = if (auth.currentUser != null) "home" else "auth"
 
-                // Decide when to show the navigation (drawer and top bar)
-                val showDrawer = when (currentRoute) {
-                    "auth", "profile" -> false
-                    else -> true
-                }
+                NavHost(navController = navController, startDestination = startDestination) {
 
-                // Wrap the NavHost with the AppScaffold, controlling visibility based on current route
-                AppScaffold(
-                    showDrawer = showDrawer,
-                    onProfileSelected = { navController.navigate("profile") },
-                    onNavigateHome = {
-                        navController.navigate("home") {
-                            popUpTo("home") { inclusive = true }
-                        }
-                    }
-                ) {
-                    NavHost(navController = navController, startDestination = startDestination) {
-                        composable("auth") {
-                            val viewModel: AuthViewModel = viewModel(
-                                factory = AuthViewModelFactory(auth, applicationContext)
-                            )
-                            val uiState by viewModel.uiState.collectAsState()
 
-                            AuthenticationScreen(
-                                uiState = uiState,
-                                onEmailChange = viewModel::updateEmail,
-                                onPasswordChange = viewModel::updatePassword,
-                                onToggleMode = viewModel::toggleLoginMode,
-                                onLoginClick = {
-                                    viewModel.loginUser { success ->
-                                        if (success) {
-                                            navController.navigate("home") {
-                                                popUpTo("auth") { inclusive = true }
-                                            }
-                                        }
-                                    }
-                                },
-                                onSignUpClick = { viewModel.signUpUser {} },
-                                onLoginAsGuestClick = {
-                                    viewModel.loginAsGuest { success ->
-                                        if (success) {
-                                            navController.navigate("home") {
-                                                popUpTo("auth") { inclusive = true }
-                                            }
-                                        }
-                                    }
-                                }
-                            )
-                        }
+                    composable("auth") {
+                        val viewModel: AuthViewModel = viewModel(
+                            factory = AuthViewModelFactory(auth, applicationContext)
+                        )
 
-                        composable("home") {
-                            HomeScreen()
-                        }
-
-                        composable("profile") {
-                            ProfileScreen(
-                                onLogout = {
-                                    auth.signOut()
-                                    navController.navigate("auth") {
+                        AuthenticationScreen(
+                            viewModel = viewModel,
+                            onNavigateToHome = { success ->
+                                if (success) {
+                                    navController.navigate("home") {
                                         popUpTo("auth") { inclusive = true }
                                     }
-                                },
-                                onNavigateBack = {
-                                    navController.popBackStack()
                                 }
-                            )
-                        }
+                            }
+                        )
+                    }
+
+                    composable("home") {
+                        HomeScreen(
+                            onNavigateToProfile = {
+                                navController.navigate("profile")
+                            }
+                        )
+                    }
+
+                    composable("profile") {
+                        ProfileScreen(
+                            onLogout = {
+                                auth.signOut()
+                                navController.navigate("auth") {
+                                    popUpTo("auth") { inclusive = true }
+                                }
+                            },
+                            onNavigateBack = {
+                                navController.popBackStack()
+                            }
+                        )
                     }
                 }
             }
