@@ -1,4 +1,3 @@
-// HomeScreen.kt
 package com.example.techtrackr.ui.home
 
 import androidx.compose.foundation.layout.*
@@ -9,17 +8,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.techtrackr.ui.navigation.CommonNavigationLayout
-import com.example.techtrackr.ui.components.SearchBar
 import kotlinx.coroutines.runBlocking
 
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = viewModel(),
-    onNavigateToProfile: () -> Unit
+    homeViewModel: HomeViewModel = viewModel()
 ) {
     CommonNavigationLayout(
-        onNavigateToProfile = onNavigateToProfile,
-        title = "Home",
+        title = "Home"
     ) { paddingValues ->
         // Content unique to the Home page
         Column(

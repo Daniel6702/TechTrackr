@@ -1,16 +1,22 @@
 package com.example.techtrackr.utils
 
-const val BASE_API_URL  = "https://www.pricerunner.dk/dk/api/search-compare-gateway/public/"
+const val BASE_URL = "https://www.pricerunner.dk/"
+
+const val BASE_API_URL  = BASE_URL + "dk/api/search-compare-gateway/public/"
+
+val CATEGORY_DATA_URL: (String) -> String = { id -> "$BASE_API_URL/navigation/menu/DK/hierarchy/$id" }
 
 val MAIN_CATEGORIES = mapOf(
-    23 to "Computerudstyr",
-    22 to "Computere",
-    9 to "Computer-hardware",
-    20 to "Netvaerk",
-    24 to "Lagring",
-    1 to "Mobiltelefoner",
-    1604 to "Hi-Fi-udstyr",
-    17 to "Foto-Video"
+    "t23" to "Computerudstyr",
+    "t22" to "Computere",
+    "t9" to "Computer-hardware",
+    "t20" to "Netvaerk",
+    "t24" to "Lagring",
+    "t1" to "Mobiltelefoner",
+    "t1604" to "Hi-Fi-udstyr",
+    "t17" to "Foto-Video"
 )
 
-const val BASE_URL = "https://www.pricerunner.dk/"
+//https://www.pricerunner.dk/dk/api/search-compare-gateway/public/navigation/menu/DK/hierarchy/t23
+
+

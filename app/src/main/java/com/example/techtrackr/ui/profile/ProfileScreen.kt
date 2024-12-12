@@ -9,19 +9,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.techtrackr.ui.navigation.LocalNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
-    onNavigateBack: () -> Unit
 ) {
+    val navController = LocalNavController.current
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Profile") },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -38,7 +40,11 @@ fun ProfileScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Button(
-                    onClick = onLogout,
+                    onClick = { onLogout()
+                                navController.navigate("auth") {
+                                    popUpTo("auth") { inclusive = true }
+                                }
+                              },
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .height(50.dp)

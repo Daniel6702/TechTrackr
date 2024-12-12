@@ -13,14 +13,19 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.techtrackr.ui.navigation.LocalNavController
 
 @Composable
 fun AuthenticationScreen(
     viewModel: AuthViewModel,
-    onNavigateToHome: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val navController = LocalNavController.current
+
+    fun navigateToHome() {
+        navController.navigate("home")
+    }
 
     Column(
         modifier = modifier
@@ -106,9 +111,9 @@ fun AuthenticationScreen(
         Button(
             onClick = {
                 if (uiState.isLogin) {
-                    viewModel.loginUser(onNavigateToHome)
+                    viewModel.loginUser { navigateToHome() }
                 } else {
-                    viewModel.signUpUser(onNavigateToHome)
+                    viewModel.signUpUser { navigateToHome() }
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -127,10 +132,12 @@ fun AuthenticationScreen(
 
         // Login as Guest
         OutlinedButton(
-            onClick = { viewModel.loginAsGuest(onNavigateToHome) },
+            onClick = { viewModel.loginAsGuest { navigateToHome() } },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login as Guest")
         }
     }
+
+
 }

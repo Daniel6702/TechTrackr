@@ -1,16 +1,16 @@
-// MainActivity.kt
 package com.example.techtrackr
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.*
-import com.example.techtrackr.ui.home.HomeScreen
-import com.example.techtrackr.ui.profile.ProfileScreen
+import com.example.techtrackr.data.shared.LocalSharedDataViewModel
+import com.example.techtrackr.data.shared.SharedDataViewModel
+import com.example.techtrackr.ui.navigation.AppNavHost
+import com.example.techtrackr.ui.navigation.LocalNavController
 import com.example.techtrackr.ui.theme.TechtrackrTheme
 import com.google.firebase.auth.FirebaseAuth
 
@@ -24,53 +24,29 @@ class MainActivity : ComponentActivity() {
         setContent {
             TechtrackrTheme {
                 val navController = rememberNavController()
+                val sharedDataViewModel: SharedDataViewModel = viewModel()
 
                 // Determine start destination based on authentication status
-                val startDestination = if (auth.currentUser != null) "home" else "auth"
+                val startDestination = if (auth.currentUser != null) {
+                    // Preload data if user is authenticated
+                    sharedDataViewModel.preloadData()
+                    "home"
+                } else {
+                    "auth"
+                }
 
-                NavHost(navController = navController, startDestination = startDestination) {
-
-
-                    composable("auth") {
-                        val viewModel: AuthViewModel = viewModel(
-                            factory = AuthViewModelFactory(auth, applicationContext)
-                        )
-
-                        AuthenticationScreen(
-                            viewModel = viewModel,
-                            onNavigateToHome = { success ->
-                                if (success) {
-                                    navController.navigate("home") {
-                                        popUpTo("auth") { inclusive = true }
-                                    }
-                                }
-                            }
-                        )
-                    }
-
-                    composable("home") {
-                        HomeScreen(
-                            onNavigateToProfile = {
-                                navController.navigate("profile")
-                            }
-                        )
-                    }
-
-                    composable("profile") {
-                        ProfileScreen(
-                            onLogout = {
-                                auth.signOut()
-                                navController.navigate("auth") {
-                                    popUpTo("auth") { inclusive = true }
-                                }
-                            },
-                            onNavigateBack = {
-                                navController.popBackStack()
-                            }
-                        )
-                    }
+                CompositionLocalProvider(
+                    LocalNavController provides navController,
+                    LocalSharedDataViewModel provides sharedDataViewModel
+                ) {
+                    AppNavHost(
+                        navController = navController,
+                        startDestination = startDestination,
+                        auth = auth
+                    )
                 }
             }
         }
     }
 }
+
