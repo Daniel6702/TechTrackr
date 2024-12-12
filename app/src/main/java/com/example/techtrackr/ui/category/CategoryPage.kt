@@ -1,18 +1,20 @@
 package com.example.techtrackr.ui.category
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.techtrackr.data.model.CategoryItem
-import com.example.techtrackr.data.model.CategoryResponse
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp // Import for font size adjustments
 import com.example.techtrackr.data.shared.LocalSharedDataViewModel
 import com.example.techtrackr.ui.navigation.CommonNavigationLayout
 import com.example.techtrackr.ui.navigation.LocalNavController
-import kotlinx.coroutines.launch
+import com.example.techtrackr.ui.product.PopularProductCard
 
 @Composable
 fun CategoryPage(
@@ -21,40 +23,86 @@ fun CategoryPage(
 ) {
     val navController = LocalNavController.current
     val categoriesMap by sharedDataViewModel.categoriesState.collectAsState()
+    val popularProductsMap by sharedDataViewModel.popularProductsState.collectAsState()
 
-    // Load the category if needed
     LaunchedEffect(categoryId) {
         sharedDataViewModel.loadCategoryIfNeeded(categoryId)
+
+        if (categoryId.startsWith("t")) {
+            sharedDataViewModel.loadPopularProducts(categoryId)
+        }
     }
 
     val category = categoriesMap[categoryId]
+    val popularProducts = popularProductsMap[categoryId]
 
     CommonNavigationLayout(title = category?.name ?: "Category") { paddingValues ->
         if (category == null) {
-            // Still loading category data
             Box(
-                modifier = Modifier.fillMaxSize().padding(paddingValues),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
             }
         } else {
-            // Display the children categories
-            LazyColumn(contentPadding = paddingValues) {
-                items(category.categories) { child ->
-                    ChildCategoryCard(
-                        childCategory = child,
-                        onClick = { clickedCategory ->
-                            if (clickedCategory.id.startsWith("t")) {
-                                // It's a main category
-                                navController.navigate("category/${clickedCategory.id}")
-                            } else if (clickedCategory.id.startsWith("cl")) {
-                                // It's a subcategory
-                                // TODO: Navigate to product page (not implemented)
-                                // navController.navigate("products/${clickedCategory.id}")
+            Column(modifier = Modifier.padding(paddingValues)) {
+                Text(
+                    text = "Subcategories",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize
+                    ),
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 4.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(category.categories) { child ->
+                        ChildCategoryCard(
+                            childCategory = child,
+                            onClick = { clickedCategory ->
+                                if (clickedCategory.id.startsWith("t")) {
+                                    navController.navigate("category/${clickedCategory.id}")
+                                } else if (clickedCategory.id.startsWith("cl")) {
+                                    // Navigate to product page (not implemented yet)
+                                }
                             }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Popular Products",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize
+                    ),
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 4.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (popularProducts == null) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp)
+                    ) {
+                        items(popularProducts) { product ->
+                            PopularProductCard(product = product)
                         }
-                    )
+                    }
                 }
             }
         }

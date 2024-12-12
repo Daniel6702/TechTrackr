@@ -9,8 +9,8 @@ val CATEGORY_DATA_URL: (String) -> String = { id -> "$BASE_API_URL/navigation/me
 val POPULAR_PRODUCTS_URL: (String) -> String = { id -> "$BASE_API_URL/popularproducts/v2/DK/$id" }
 
 val MAIN_CATEGORIES = mapOf(
-    "t1" to "Lyd & Billede",
     "t2" to "Computer & Software",
+    "t1" to "Lyd & Billede",
     "t4" to "Telefoni & Wearables",
     "t17" to "Foto & Video",
     "t19" to "Gaming & Underholdning",

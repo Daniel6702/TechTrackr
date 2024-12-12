@@ -14,6 +14,7 @@ import com.example.techtrackr.ui.category.CategoryPage
 import com.example.techtrackr.ui.home.HomeScreen
 import com.example.techtrackr.ui.navigation.CommonNavigationLayout
 import com.example.techtrackr.ui.profile.ProfileScreen
+import com.example.techtrackr.ui.watchlist.WatchlistScreen
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -46,5 +47,11 @@ fun AppNavHost(
             val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
             CategoryPage(categoryId)
         }
+
+        composable("watchlist") {
+            WatchlistScreen()
+        }
     }
 }
+
+

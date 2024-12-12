@@ -2,41 +2,46 @@ package com.example.techtrackr.ui.category
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.techtrackr.data.model.CategoryItem
+import com.example.techtrackr.utils.BASE_URL
 
 @Composable
 fun ChildCategoryCard(
     childCategory: CategoryItem,
     onClick: (CategoryItem) -> Unit
 ) {
-    androidx.compose.material3.Card(
+    Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
+            .width(200.dp)
+            .padding(vertical = 8.dp) // vertical padding inside the LazyRow item
             .clickable { onClick(childCategory) }
     ) {
-        Row(
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        Column(
             modifier = Modifier.padding(8.dp)
         ) {
             val imageUrl = childCategory.image?.path ?: ""
             if (imageUrl.isNotBlank()) {
-                coil.compose.AsyncImage(
-                    model = com.example.techtrackr.utils.BASE_URL + imageUrl,
+                AsyncImage(
+                    model = BASE_URL + imageUrl,
                     contentDescription = childCategory.image?.description,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp)
                 )
             } else {
-                // If no image, you could show a placeholder or nothing
-                Spacer(modifier = Modifier.size(48.dp))
+                Spacer(modifier = Modifier.height(100.dp))
             }
-            Spacer(modifier = Modifier.width(16.dp))
-            androidx.compose.material3.Text(
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
                 text = childCategory.name,
-                style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }
