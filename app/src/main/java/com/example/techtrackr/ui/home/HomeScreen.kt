@@ -2,7 +2,6 @@ package com.example.techtrackr.ui.home
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -10,8 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -21,23 +18,49 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import kotlinx.coroutines.launch
-import kotlin.reflect.KSuspendFunction0
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Spacer(modifier = Modifier.height(32.dp))
-        SearchBar(
-            query = homeViewModel.searchQuery,
-            onQueryChanged = homeViewModel::onSearchQueryChanged,
-            onSearch = homeViewModel::performSearch
-        )
-        // Add other UI components below
-    }
+fun HomeScreen(
+    homeViewModel: HomeViewModel = viewModel(),
+    onNavigateToProfile: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Home") },
+                actions = {
+                    IconButton(onClick = onNavigateToProfile) {
+                        Icon(
+                            imageVector = Icons.Filled.AccountCircle,
+                            contentDescription = "Profile"
+                        )
+                    }
+                }
+            )
+        },
+        content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+                SearchBar(
+                    query = homeViewModel.searchQuery,
+                    onQueryChanged = homeViewModel::onSearchQueryChanged,
+                    onSearch = homeViewModel::performSearch
+                )
+                // Add other UI components below
+            }
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,3 +107,4 @@ fun SearchBar(
         )
     )
 }
+

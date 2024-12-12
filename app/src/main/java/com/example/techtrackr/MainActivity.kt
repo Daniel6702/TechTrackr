@@ -9,6 +9,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.*
+import com.example.techtrackr.ui.home.HomeScreen
+import com.example.techtrackr.ui.profile.ProfileScreen
 import com.example.techtrackr.ui.theme.TechtrackrTheme
 import com.google.firebase.auth.FirebaseAuth
 
@@ -62,11 +64,22 @@ class MainActivity : ComponentActivity() {
 
                     composable("home") {
                         HomeScreen(
+                            onNavigateToProfile = {
+                                navController.navigate("profile")
+                            }
+                        )
+                    }
+
+                    composable("profile") {
+                        ProfileScreen(
                             onLogout = {
                                 auth.signOut()
                                 navController.navigate("auth") {
                                     popUpTo("auth") { inclusive = true }
                                 }
+                            },
+                            onNavigateBack = {
+                                navController.popBackStack()
                             }
                         )
                     }
