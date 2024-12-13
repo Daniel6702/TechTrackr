@@ -136,6 +136,13 @@ fun ProductContent(productViewModel: ProductViewModel) {
 
                         // Sellers (merchants) from productListings
                         val listings = productListings?.offers.orEmpty()
+                            .groupBy { it.merchantId } // Group by merchantId (unique per seller)
+                            .mapValues { (_, offers) ->
+                                offers.minByOrNull { it.price?.amount?.toDoubleOrNull() ?: Double.MAX_VALUE } // Find lowest priced offer for each seller
+                            }
+                            .values
+                            .filterNotNull() // Remove null values in case of invalid entries
+                            .sortedBy { it.price?.amount?.toDoubleOrNull() ?: Double.MAX_VALUE } // Sort by price
                         val merchantsMap = productListings?.merchants.orEmpty()
                         if (listings.isNotEmpty()) {
                             item {
