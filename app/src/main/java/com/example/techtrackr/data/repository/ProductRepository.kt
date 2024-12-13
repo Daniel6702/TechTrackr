@@ -14,7 +14,11 @@ class ProductRepository(private val apiService: ApiService) {
     suspend fun getProductDetails(subcategoryId: String, productId: String): ProductDetailsResponse? = withContext(Dispatchers.IO) {
         val url = PRODUCT_DETAILS(subcategoryId, productId)
         Log.d("ProductRepository", "Fetching product details from URL: $url")
-        val response = apiService.getProductDetails(url)
+
+        val response = retryOperation {
+            apiService.getProductDetails(url)
+        }
+
         if (response.isSuccessful) {
             Log.d("ProductRepository", "Product details fetched successfully with response: $response")
             response.body()
@@ -24,8 +28,10 @@ class ProductRepository(private val apiService: ApiService) {
         }
     }
 
-
     suspend fun getProductListings(productId: String): ProductListingsResponse = withContext(Dispatchers.IO) {
-        apiService.getProductListings(PRODUCT_LISTINGS(productId))
+        val url = PRODUCT_LISTINGS(productId)
+        retryOperation {
+            apiService.getProductListings(url)
+        }
     }
 }

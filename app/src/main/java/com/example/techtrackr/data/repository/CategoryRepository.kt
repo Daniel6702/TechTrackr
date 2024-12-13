@@ -15,19 +15,28 @@ class CategoryRepository(private val apiService: ApiService) {
 
     suspend fun getCategoryById(id: String): CategoryResponse = withContext(Dispatchers.IO) {
         val url = CATEGORY_DATA_URL(id)
-        apiService.getCategoryData(url)
+        retryOperation {
+            apiService.getCategoryData(url)
+        }
     }
 
-    suspend fun getPopularProductsByCategoryId(categoryId: String): PopularProductsResponse {
+    suspend fun getPopularProductsByCategoryId(categoryId: String): PopularProductsResponse = withContext(Dispatchers.IO) {
         val url = POPULAR_PRODUCTS_URL(categoryId)
-        return apiService.getPopularProducts(url)
+        retryOperation {
+            apiService.getPopularProducts(url)
+        }
     }
 
     suspend fun getDeals(): ProductsResponse = withContext(Dispatchers.IO) {
-        apiService.getDeals(DEALS_URL)
+        retryOperation {
+            apiService.getDeals(DEALS_URL)
+        }
     }
 
     suspend fun getHotProducts(): ProductsResponse = withContext(Dispatchers.IO) {
-        apiService.getHotProducts(HOT_PRODUCTS_URL)
+        retryOperation {
+            apiService.getHotProducts(HOT_PRODUCTS_URL)
+        }
     }
 }
+
