@@ -1,21 +1,18 @@
 package com.example.techtrackr.ui.product
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import coil.compose.AsyncImage
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.techtrackr.data.model.*
+import coil.compose.AsyncImage
 import com.example.techtrackr.ui.navigation.CommonNavigationLayout
 import com.example.techtrackr.utils.BASE_URL
 
@@ -27,7 +24,11 @@ fun ProductContent(productViewModel: ProductViewModel) {
     val productListings by productViewModel.productListingsState.collectAsState()
 
     CommonNavigationLayout(title = productDetails?.product?.name ?: "Product") { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
             when {
                 isLoading -> {
                     CircularProgressIndicator(
@@ -42,123 +43,183 @@ fun ProductContent(productViewModel: ProductViewModel) {
                     )
                 }
                 else -> {
-                    LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                        // Product images
+                    // State to manage the number of visible offers
+                    var visibleOffersCount by remember { mutableStateOf(3) }
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // Product Images
                         val images = productDetails?.product?.images.orEmpty()
                         if (images.isNotEmpty()) {
                             item {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .horizontalScroll(rememberScrollState())
+                                Card(
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    images.forEach { img ->
-                                        val imageUrl = img.path
-                                        if (!imageUrl.isNullOrEmpty()) {
-                                            AsyncImage(
-                                                model = BASE_URL + imageUrl,
-                                                contentDescription = img.description,
-                                                modifier = Modifier
-                                                    .size(200.dp)
-                                                    .padding(end = 8.dp)
-                                            )
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .horizontalScroll(rememberScrollState())
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        images.forEach { img ->
+                                            val imageUrl = img.path
+                                            if (!imageUrl.isNullOrEmpty()) {
+                                                AsyncImage(
+                                                    model = BASE_URL + imageUrl,
+                                                    contentDescription = img.description,
+                                                    modifier = Modifier
+                                                        .size(200.dp)
+                                                        .clip(MaterialTheme.shapes.medium)
+                                                )
+                                            }
                                         }
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(16.dp))
                             }
                         }
 
-                        // Product name & description
+                        // Product Name & Article
                         item {
-                            Text(
-                                text = productDetails?.product?.name ?: "No name",
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            val desc = productDetails?.product?.description
-                            if (!desc.isNullOrEmpty()) {
-                                Text(text = desc, style = MaterialTheme.typography.bodyMedium)
+                            Column(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = productDetails?.product?.name ?: "No name",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                val description = productDetails?.product?.description
+                                if (description != null) {
+                                    Text(
+                                        text = description,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                             }
-                            val article = productDetails?.product?.article
-                            if (!article.isNullOrEmpty()) {
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(text = article, style = MaterialTheme.typography.bodySmall)
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Divider()
-                            Spacer(modifier = Modifier.height(16.dp))
                         }
 
-                        // Specifications
+                        // Sellers (Offers) Section below Images
+                        val offers = productListings?.offers.orEmpty()
+                        val merchantsMap = productListings?.merchants.orEmpty()
+                        if (offers.isNotEmpty()) {
+                            item {
+                                Text(
+                                    text = "Sellers",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                            items(offers.take(visibleOffersCount)) { offer ->
+                                val merchant = merchantsMap[offer.merchantId]
+                                if (merchant != null) {
+                                    OfferCard(
+                                        offer = offer,
+                                        merchant = merchant
+                                    )
+                                }
+                            }
+
+                            // Show "Show More" button if there are more offers to display
+                            if (visibleOffersCount < offers.size) {
+                                item {
+                                    Button(
+                                        onClick = {
+                                            visibleOffersCount = (visibleOffersCount + 3).coerceAtMost(offers.size)
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 8.dp)
+                                    ) {
+                                        Text(text = "Show More")
+                                    }
+                                }
+                            }
+                        }
+
+                        // Article (Collapsible)
+                        val article = productDetails?.product?.article
+                        if (!article.isNullOrEmpty()) {
+                            item {
+                                ExpandableSection(
+                                    title = "Article",
+                                    content = {
+                                        Text(
+                                            text = article,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
+                                )
+                            }
+                        }
+
+                        // Specifications Section (Collapsible)
                         val specs = productDetails?.specification?.sections.orEmpty()
                         if (specs.isNotEmpty()) {
                             item {
-                                Text("Specifications", style = MaterialTheme.typography.titleMedium)
-                                Spacer(modifier = Modifier.height(8.dp))
-                            }
-                            items(specs) { section ->
-                                if (section.attributes.isNullOrEmpty()) return@items
-                                Text(section.sectionName ?: "", style = MaterialTheme.typography.bodyMedium)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                section.attributes.forEach { attr ->
-                                    val values = attr.values?.joinToString { it.name ?: "" } ?: ""
-                                    Text("- ${attr.name}: $values", style = MaterialTheme.typography.bodySmall)
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-                            }
-                            item {
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Divider()
-                                Spacer(modifier = Modifier.height(16.dp))
+                                ExpandableSection(
+                                    title = "Specifications",
+                                    content = {
+                                        specs.forEach { section ->
+                                            Text(
+                                                text = section.sectionName ?: "",
+                                                style = MaterialTheme.typography.titleMedium,
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            section.attributes?.forEach { attr ->
+                                                val values = attr.values?.joinToString { it.name ?: "" } ?: ""
+                                                Text(
+                                                    text = "- ${attr.name}: $values",
+                                                    style = MaterialTheme.typography.bodySmall
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                        }
+                                    }
+                                )
                             }
                         }
 
-                        // Review summary
+                        // Reviews Section (Collapsible)
                         val review = productDetails?.productReviewSummary
                         if (review != null) {
                             item {
-                                Text("Reviews", style = MaterialTheme.typography.titleMedium)
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text("Average: ${review.average ?: "N/A"} from ${review.count ?: 0} reviews")
-                                review.distribution?.let {
-                                    Text("5 stars: ${it.five ?: 0}")
-                                    Text("4 stars: ${it.four ?: 0}")
-                                    Text("3 stars: ${it.three ?: 0}")
-                                    Text("2 stars: ${it.two ?: 0}")
-                                    Text("1 star: ${it.one ?: 0}")
-                                }
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Divider()
-                                Spacer(modifier = Modifier.height(16.dp))
+                                ExpandableSection(
+                                    title = "Reviews",
+                                    content = {
+                                        Column {
+                                            Text(
+                                                text = "Average: ${review.average ?: "N/A"}",
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Medium
+                                            )
+                                            Text(
+                                                text = "From ${review.count ?: 0} reviews",
+                                                style = MaterialTheme.typography.bodyMedium
+                                            )
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            review.distribution?.let {
+                                                Column {
+                                                    RatingBar(ratingDistribution = it)
+                                                }
+                                            }
+                                        }
+                                    }
+                                )
                             }
                         }
 
-                        // Sellers (merchants) from productListings
-                        val listings = productListings?.offers.orEmpty()
-                        val merchantsMap = productListings?.merchants.orEmpty()
-                        if (listings.isNotEmpty()) {
-                            item {
-                                Text("Sellers", style = MaterialTheme.typography.titleMedium)
-                                Spacer(modifier = Modifier.height(8.dp))
-                            }
-                            items(listings) { offer ->
-                                val merchant = merchantsMap[offer.merchantId]
-                                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                                    Text(
-                                        text = offer.name ?: "No name",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                    val price = offer.price?.amount + " " + offer.price?.currency
-                                    Text(text = "Price: $price", style = MaterialTheme.typography.bodySmall)
-                                    if (merchant != null) {
-                                        Text(text = "Seller: ${merchant.name}", style = MaterialTheme.typography.bodySmall)
-                                        merchant.rating?.average?.let { avg ->
-                                            Text(text = "Merchant Rating: $avg", style = MaterialTheme.typography.bodySmall)
-                                        }
-                                    }
-                                }
-                            }
+                        // Additional Space at Bottom
+                        item {
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
                     }
                 }
