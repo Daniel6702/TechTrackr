@@ -1,13 +1,17 @@
 package com.example.techtrackr.ui.home
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.techtrackr.data.shared.LocalSharedDataViewModel
 import com.example.techtrackr.ui.navigation.CommonNavigationLayout
 import com.example.techtrackr.ui.navigation.LocalNavController
 import com.example.techtrackr.ui.product.ProductCard
@@ -18,86 +22,92 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel()
 ) {
     val navController = LocalNavController.current
+    val sharedDataViewModel = LocalSharedDataViewModel.current
+    val recentlyViewed by sharedDataViewModel.recentlyViewed.collectAsState()
 
     CommonNavigationLayout(
         title = "Home"
     ) { paddingValues ->
-        Column(
+        // Use a LazyColumn for scrolling
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             // Search Bar
-            SearchBar(
-                query = homeViewModel.searchQuery,
-                onQueryChange = { query -> homeViewModel.onSearchQueryChanged(query) },
-                onSearch = {
-                    runBlocking {
-                        homeViewModel.performSearch()
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
+            item {
+                SearchBar(
+                    query = homeViewModel.searchQuery,
+                    onQueryChange = { query -> homeViewModel.onSearchQueryChanged(query) },
+                    onSearch = {
+                        runBlocking {
+                            homeViewModel.performSearch()
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             // Deals Section
-            Text(
-                text = "Deals",
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            val deals = homeViewModel.deals
-            if (deals.isEmpty()) {
-                Text(text = "No deals available.", style = MaterialTheme.typography.bodyMedium)
-            } else {
-                LazyRow {
-                    items(deals) { dealProduct ->
-                        ProductCard(product = dealProduct) {
-                            val subcategoryId = dealProduct.category.id.removePrefix("cl")
-                            navController.navigate("product/$subcategoryId/${dealProduct.id}")
+            item {
+                Text(text = "Deals", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                val deals = homeViewModel.deals
+                if (deals.isEmpty()) {
+                    Text(text = "No deals available.", style = MaterialTheme.typography.bodyMedium)
+                } else {
+                    LazyRow {
+                        items(deals) { dealProduct ->
+                            ProductCard(product = dealProduct) {
+                                val subcategoryId = dealProduct.category.id.removePrefix("cl")
+                                navController.navigate("product/$subcategoryId/${dealProduct.id}")
+                            }
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             // Hot Products Section
-            Text(
-                text = "Hot Products",
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            val hotProducts = homeViewModel.hotProducts
-            if (hotProducts.isEmpty()) {
-                Text(text = "No hot products available.", style = MaterialTheme.typography.bodyMedium)
-            } else {
-                LazyRow {
-                    items(hotProducts) { hotProduct ->
-                        ProductCard(product = hotProduct) {
-                            val subcategoryId = hotProduct.category.id.removePrefix("cl")
-                            navController.navigate("product/$subcategoryId/${hotProduct.id}")
+            item {
+                Text(text = "Hot Products", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                val hotProducts = homeViewModel.hotProducts
+                if (hotProducts.isEmpty()) {
+                    Text(text = "No hot products available.", style = MaterialTheme.typography.bodyMedium)
+                } else {
+                    LazyRow {
+                        items(hotProducts) { hotProduct ->
+                            ProductCard(product = hotProduct) {
+                                val subcategoryId = hotProduct.category.id.removePrefix("cl")
+                                navController.navigate("product/$subcategoryId/${hotProduct.id}")
+                            }
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Hot Products Section
-            Text(
-                text = "Recently Looked At",
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
+            // Recently Looked At Section
+            item {
+                Text(text = "Recently Looked At", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                if (recentlyViewed.isEmpty()) {
+                    Text(
+                        text = "You haven't looked at any products yet.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                } else {
+                    LazyRow {
+                        items(recentlyViewed) { product ->
+                            ProductCard(product = product) {
+                                val subcategoryId = product.category.id.removePrefix("cl")
+                                navController.navigate("product/$subcategoryId/${product.id}")
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

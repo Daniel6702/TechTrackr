@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.techtrackr.data.repository.CategoryRepository
 import com.example.techtrackr.data.model.CategoryResponse
 import com.example.techtrackr.data.model.PopularProductItem
+import com.example.techtrackr.data.model.Product
 import com.example.techtrackr.data.remote.NetworkModule
+import com.example.techtrackr.utils.JsonUtils
 import com.example.techtrackr.utils.MAIN_CATEGORIES
+import com.example.techtrackr.utils.SharedPreferencesUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,6 +26,8 @@ class SharedDataViewModel : ViewModel() {
     private val _popularProductsState = MutableStateFlow<Map<String, List<PopularProductItem>>>(emptyMap())
     val popularProductsState: StateFlow<Map<String, List<PopularProductItem>>> get() = _popularProductsState
 
+    private val _recentlyViewed = MutableStateFlow<List<Product>>(emptyList())
+    val recentlyViewed: StateFlow<List<Product>> get() = _recentlyViewed
 
     // If you have other data sets, create StateFlows and methods similarly
     // e.g., private val _userPreferences = MutableStateFlow<UserPreferences?>(null)
@@ -31,6 +36,19 @@ class SharedDataViewModel : ViewModel() {
     // Called after user logs in or when the app starts
     fun preloadData() {
         preloadCategories()
+        loadRecentlyViewedFromPrefs()
+    }
+
+    private fun loadRecentlyViewedFromPrefs() {
+        viewModelScope.launch {
+            val json = SharedPreferencesUtils.getRecentlyViewed()
+            if (json != null) {
+                val products = JsonUtils.fromJson(json)
+                if (products != null) {
+                    _recentlyViewed.value = products
+                }
+            }
+        }
     }
 
     private fun preloadCategories() {
@@ -61,7 +79,6 @@ class SharedDataViewModel : ViewModel() {
         }
     }
 
-
     fun loadCategoryIfNeeded(categoryId: String) {
         if (!categoriesState.value.containsKey(categoryId)) {
             viewModelScope.launch {
@@ -76,5 +93,30 @@ class SharedDataViewModel : ViewModel() {
             }
         }
     }
+
+    fun addRecentlyViewed(product: Product) {
+        viewModelScope.launch {
+            val currentList = _recentlyViewed.value.toMutableList()
+
+            currentList.removeAll { it.id == product.id }
+
+            currentList.add(0, product)
+
+            if (currentList.size > 20) {
+                currentList.removeLast()
+            }
+
+            _recentlyViewed.value = currentList
+
+            saveRecentlyViewedToPrefs(currentList)
+        }
+    }
+
+    private fun saveRecentlyViewedToPrefs(products: List<Product>) {
+        val json = JsonUtils.toJson(products)
+        SharedPreferencesUtils.saveRecentlyViewed(json)
+    }
+
+
 }
 

@@ -12,6 +12,7 @@ import com.example.techtrackr.data.shared.SharedDataViewModel
 import com.example.techtrackr.ui.navigation.AppNavHost
 import com.example.techtrackr.ui.navigation.LocalNavController
 import com.example.techtrackr.ui.theme.TechtrackrTheme
+import com.example.techtrackr.utils.SharedPreferencesUtils
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
@@ -19,6 +20,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SharedPreferencesUtils.init(applicationContext)
         enableEdgeToEdge()
 
         setContent {
