@@ -13,6 +13,7 @@ import com.example.techtrackr.AuthenticationScreen
 import com.example.techtrackr.ui.category.CategoryPage
 import com.example.techtrackr.ui.home.HomeScreen
 import com.example.techtrackr.ui.navigation.CommonNavigationLayout
+import com.example.techtrackr.ui.product.ProductPage
 import com.example.techtrackr.ui.profile.ProfileScreen
 import com.example.techtrackr.ui.watchlist.WatchlistScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -50,6 +51,18 @@ fun AppNavHost(
 
         composable("watchlist") {
             WatchlistScreen()
+        }
+
+        composable(
+            route = "product/{subcategoryId}/{productId}",
+            arguments = listOf(
+                navArgument("subcategoryId") { type = NavType.StringType },
+                navArgument("productId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val subcategoryId = backStackEntry.arguments?.getString("subcategoryId") ?: ""
+            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+            ProductPage(subcategoryId, productId)
         }
     }
 }

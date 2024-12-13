@@ -1,5 +1,6 @@
 package com.example.techtrackr.ui.product
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,14 +14,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.techtrackr.data.model.PopularProductItem
+import com.example.techtrackr.data.model.Product
 import com.example.techtrackr.utils.BASE_URL
 
 @Composable
-fun PopularProductCard(product: PopularProductItem) {
+fun PopularProductCard(product: PopularProductItem, onClick: (PopularProductItem) -> Unit = {}) {
     Card(
         modifier = Modifier
             .size(width = 200.dp, height = 250.dp)
             .padding(8.dp)
+            .clickable { onClick(product) }
     ) {
         Column(
             modifier = Modifier.padding(8.dp)

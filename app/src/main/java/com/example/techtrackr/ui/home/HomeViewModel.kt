@@ -43,9 +43,11 @@ class HomeViewModel : ViewModel() {
     }
 
     private fun loadDeals() {
+        Log.d("HomeViewModel", "LOADING DEALS")
         viewModelScope.launch {
             try {
                 val response = repository.getDeals()
+                Log.d("HomeViewModel", "Response: $response")
                 // Filter the products by allowed category IDs
                 val filteredDeals = response.products.filter { product ->
                     ALLOWED_CATEGORY_IDS.contains(product.category.id)

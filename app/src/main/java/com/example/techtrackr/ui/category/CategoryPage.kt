@@ -15,6 +15,7 @@ import com.example.techtrackr.data.shared.LocalSharedDataViewModel
 import com.example.techtrackr.ui.navigation.CommonNavigationLayout
 import com.example.techtrackr.ui.navigation.LocalNavController
 import com.example.techtrackr.ui.product.PopularProductCard
+import com.example.techtrackr.ui.product.ProductCard
 
 @Composable
 fun CategoryPage(
@@ -100,7 +101,11 @@ fun CategoryPage(
                         contentPadding = PaddingValues(horizontal = 16.dp)
                     ) {
                         items(popularProducts) { product ->
-                            PopularProductCard(product = product)
+                            PopularProductCard(product = product) {
+                                val subcategoryId = product.category.id.removePrefix("cl")
+                                navController.navigate("product/$subcategoryId/${product.id}")
+
+                            }
                         }
                     }
                 }

@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.techtrackr.ui.navigation.CommonNavigationLayout
+import com.example.techtrackr.ui.navigation.LocalNavController
 import com.example.techtrackr.ui.product.ProductCard
 import kotlinx.coroutines.runBlocking
 
@@ -16,6 +17,8 @@ import kotlinx.coroutines.runBlocking
 fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel()
 ) {
+    val navController = LocalNavController.current
+
     CommonNavigationLayout(
         title = "Home"
     ) { paddingValues ->
@@ -56,7 +59,8 @@ fun HomeScreen(
                 LazyRow {
                     items(deals) { dealProduct ->
                         ProductCard(product = dealProduct) {
-                            // Handle product click
+                            val subcategoryId = dealProduct.category.id.removePrefix("cl")
+                            navController.navigate("product/$subcategoryId/${dealProduct.id}")
                         }
                     }
                 }
@@ -78,11 +82,21 @@ fun HomeScreen(
                 LazyRow {
                     items(hotProducts) { hotProduct ->
                         ProductCard(product = hotProduct) {
-                            // Handle product click
+                            val subcategoryId = hotProduct.category.id.removePrefix("cl")
+                            navController.navigate("product/$subcategoryId/${hotProduct.id}")
                         }
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Hot Products Section
+            Text(
+                text = "Recently Looked At",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
         }
     }
