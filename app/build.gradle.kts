@@ -105,4 +105,6 @@ dependencies {
 
     // Retrofit Coroutine Support (Optional, if needed)
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    implementation("androidx.compose.material:material-icons-extended:1.5.1")
 }
