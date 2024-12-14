@@ -119,5 +119,7 @@ dependencies {
 
     implementation("androidx.work:work-runtime-ktx:2.7.1")
 
+    //implementation("com.github.halilozercan:compose-charts:1.0.0")
+
     //implementation("com.google.android.gms:play-services:17.0.0")
 }

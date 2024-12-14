@@ -17,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.techtrackr.data.model.Merchant
+import com.example.techtrackr.data.model.PriceHistoryEntry
 import com.example.techtrackr.ui.navigation.CommonNavigationLayout
 import com.example.techtrackr.utils.BASE_URL
 
@@ -26,6 +28,7 @@ fun ProductContent(productViewModel: ProductViewModel) {
     val errorMessage by productViewModel.errorMessage.collectAsState()
     val productDetails by productViewModel.productDetailsState.collectAsState()
     val productListings by productViewModel.productListingsState.collectAsState()
+    val priceHistory by productViewModel.priceHistoryState.collectAsState()
 
     val isInWatchlist by productViewModel.isInWatchlist.collectAsState()
 
@@ -266,6 +269,52 @@ fun ProductContent(productViewModel: ProductViewModel) {
                             }
                         }
 
+                        // ** Price History Section **
+                        val priceHistoryData = priceHistory
+                        if (priceHistoryData != null) {
+                            item {
+                                ExpandableSection(
+                                    title = "Price History",
+                                    content = {
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            // Display Lowest and Highest Prices
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(
+
+                                                    text = "Lowest Price: ${priceHistoryData.lowest?.let { formatPrice(it.toDouble(), priceHistoryData.currencyCode) } ?: "N/A"}",
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                                Text(
+                                                    text = "Highest Price: ${priceHistoryData.highest?.let { formatPrice(it.toDouble(), priceHistoryData.currencyCode) } ?: "N/A"}",
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    fontWeight = FontWeight.Medium
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.height(16.dp))
+
+                                            priceHistoryData.history
+                                                ?.sortedBy { it.timestampEpoch?.toLongOrNull() ?: 0L }
+                                                ?.map { (it.price ?: 0.0).toFloat() } // Convert to Float
+                                                ?.let { prices ->
+                                                    LineChart(
+                                                        data = prices,
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .height(200.dp)
+                                                    )
+                                                }
+                                            Spacer(modifier = Modifier.height(16.dp))
+                                        }
+                                    }
+                                )
+                            }
+                        }
                         // Additional Space at Bottom
                         item {
                             Spacer(modifier = Modifier.height(16.dp))
@@ -274,5 +323,72 @@ fun ProductContent(productViewModel: ProductViewModel) {
                 }
             }
         }
+    }
+}
+
+/**
+ * Formats the price based on the currency code.
+ */
+@Composable
+fun formatPrice(price: Double, currencyCode: String?): String {
+    // You can enhance this function to format the price based on locale or use NumberFormat
+    return if (currencyCode != null) {
+        "$price $currencyCode"
+    } else {
+        "$price"
+    }
+}
+
+/**
+ * Displays a single price history entry.
+ */
+@Composable
+fun PriceHistoryEntryCard(entry: PriceHistoryEntry, merchants: List<Merchant>?) {
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = entry.timestamp?.let { formatDate(it) } ?: "Unknown Date",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = "Price: ${entry.price?.let { formatPrice(it, null) } ?: "N/A"}",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            // Optionally, display merchant name
+            val merchantName = merchants?.find { it.id.toString() == entry.merchantId }?.name ?: entry.merchantName ?: "Unknown Merchant"
+            Text(
+                text = merchantName,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray
+            )
+        }
+    }
+}
+
+/**
+ * Formats the timestamp to a readable date format.
+ */
+fun formatDate(timestamp: String): String {
+    return try {
+        val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", java.util.Locale.getDefault())
+        val date = parser.parse(timestamp)
+        val formatter = java.text.SimpleDateFormat("dd MMM yyyy", java.util.Locale.getDefault())
+        formatter.format(date)
+    } catch (e: Exception) {
+        "Invalid Date"
     }
 }

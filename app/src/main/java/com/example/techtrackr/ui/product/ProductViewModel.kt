@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.techtrackr.data.model.Category
 import com.example.techtrackr.data.model.Image
 import com.example.techtrackr.data.model.PdPrice
+import com.example.techtrackr.data.model.PriceHistoryResponse
 import com.example.techtrackr.data.model.Product
 import com.example.techtrackr.data.model.ProductDetailsResponse
 import com.example.techtrackr.data.model.ProductListingsResponse
@@ -40,6 +41,9 @@ class ProductViewModel(
     private val _productListingsState = MutableStateFlow<ProductListingsResponse?>(null)
     val productListingsState = _productListingsState.asStateFlow()
 
+    private val _priceHistoryState = MutableStateFlow<PriceHistoryResponse?>(null)
+    val priceHistoryState = _priceHistoryState.asStateFlow()
+
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
@@ -65,6 +69,7 @@ class ProductViewModel(
 
             var details: ProductDetailsResponse? = null
             var listings: ProductListingsResponse? = null
+            var priceHistory: PriceHistoryResponse? = null
 
             try {
                 details = repository.getProductDetails(subcategoryId, productId)
@@ -73,8 +78,12 @@ class ProductViewModel(
                 listings = repository.getProductListings(productId)
                 Log.d("ProductViewModel", "Product listings: $listings")
 
+                priceHistory = repository.getPriceHistory(productId)
+                Log.d("ProductViewModel", "Price history: $priceHistory")
+
                 _productDetailsState.value = details
                 _productListingsState.value = listings
+                _priceHistoryState.value = priceHistory
 
                 // Convert product details and listings to a Product object
                 val viewedProduct = createProductFromDetailsAndListings(details, listings, subcategoryId, productId)

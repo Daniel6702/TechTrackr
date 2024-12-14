@@ -16,6 +16,8 @@ val PRODUCT_DETAILS: (String, String) -> String = { subcategoryId, productId -> 
 
 val PRODUCT_LISTINGS: (String) -> String = {productId -> BASE_API_URL + "product-detail/v0/offers/DK/$productId?af_ORIGIN=NATIONAL&af_ITEM_CONDITION=NEW,UNKNOWN&sortByPreset=PRICE"}
 
+val PRICE_HISTORY: (String) -> String = {productId -> BASE_API_URL + "pricehistory/product/$productId/DK/DAY?merchantId=&selectedInterval=THREE_MONTHS&filter=NATIONAL"}
+
 val SUBCATEGORY_PRODUCTS: (String, String) -> String = {subcategoryId, parameters -> BASE_API_URL + "search/category/v3/DK/$subcategoryId?$parameters" }
 
 val SUBCATEGOY_FILTERS: (String) -> String = {subcategoryId -> BASE_API_URL + "search/category/filters/DK/$subcategoryId?showAll=true"}
@@ -23,6 +25,13 @@ val SUBCATEGOY_FILTERS: (String) -> String = {subcategoryId -> BASE_API_URL + "s
 val FILER_FACETS: (String, String) -> String = {subcategoryId, filterId -> BASE_API_URL + "search/category/facets/DK/$subcategoryId/$filterId"}
 
 //https://www.pricerunner.dk/dk/api/search-compare-gateway/public/product-detail/v0/offers/DK/3367856790
+
+///pricehistory/product/{product_id}/DK/DAY
+
+
+// https://www.pricerunner.dk/dk/api/search-compare-gateway/public/pricehistory/product/3284921632/DK/DAY?merchantId=&selectedInterval=THREE_MONTHS&filter=NATIONAL
+
+// https://www.pricerunner.dk/dk/api/search-compare-gateway/public/pricehistory/product/3367856790/DK/DAY?merchantId=&selectedInterval=THREE_MONTHS&filter=NATIONAL
 
 val MAIN_CATEGORIES = mapOf(
     "t2" to "Computer & Software",

@@ -2,6 +2,7 @@ package com.example.techtrackr.data.remote
 
 import com.example.techtrackr.data.model.CategoryResponse
 import com.example.techtrackr.data.model.PopularProductsResponse
+import com.example.techtrackr.data.model.PriceHistoryResponse
 import com.example.techtrackr.data.model.ProductDetailsResponse
 import com.example.techtrackr.data.model.ProductListingsResponse
 import com.example.techtrackr.data.model.ProductsResponse
@@ -27,4 +28,7 @@ interface ApiService {
 
     @GET
     suspend fun getProductListings(@Url url: String): ProductListingsResponse
+
+    @GET
+    suspend fun getPriceHistory(@Url url: String): Response<PriceHistoryResponse>
 }
