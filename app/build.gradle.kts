@@ -110,4 +110,11 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.5.1")
 
     implementation(platform("com.google.firebase:firebase-bom:31.2.0"))
+
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
+
+    //implementation("com.google.android.gms:play-services:17.0.0")
 }

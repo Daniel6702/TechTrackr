@@ -196,6 +196,9 @@ class ProductViewModel(
             return
         }
 
+        // Assuming `lowestPrice.amount` is the current price
+        val originalPrice = product.lowestPrice?.amount?.toDoubleOrNull() ?: 0.0
+
         val watchlistDocRef = firestore.collection("users")
             .document(currentUser.uid)
             .collection("watchlist")
@@ -207,24 +210,25 @@ class ProductViewModel(
             categoryID = product.category.id,
             productID = product.id,
             description = product.description,
-            lowestPrice = product.lowestPrice,
+            currentPrice = originalPrice,
             imageUrl = product.image?.path,
-            timestamp = Timestamp.now()
+            timestamp = Timestamp.now(),
+            originalPrice = originalPrice // Set original price
         )
 
-        watchlistDocRef.set(
-            watchlistProduct
-        )
+        firestore.runTransaction { transaction ->
+            transaction.set(watchlistDocRef, watchlistProduct)
+        }
             .addOnSuccessListener {
                 _isInWatchlist.value = true
+                toast("Added to watchlist")
             }
             .addOnFailureListener { exception ->
                 Log.e("ProductViewModel", "Error adding to watchlist: ${exception.message}")
                 _errorMessage.value = "Failed to add to watchlist."
             }
-
-        toast("Added to watchlist")
     }
+
 
     fun removeFromWatchlist() {
         val currentUser = auth.currentUser

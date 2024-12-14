@@ -10,7 +10,8 @@ data class WatchlistProduct(
     @PropertyName("categoryID") val categoryID: String = "",
     @PropertyName("productID") val productID: String = "",
     @PropertyName("description") val description: String? = null,
-    @PropertyName("lowestPrice") val lowestPrice: PdPrice? = null,
+    @PropertyName("currentPrice") val currentPrice: Double = 0.0,
     @PropertyName("imageUrl") val imageUrl: String? = null,
-    @PropertyName("timestamp") val timestamp: Timestamp? = null
+    @PropertyName("timestamp") val timestamp: Timestamp? = null,
+    @PropertyName("originalPrice") val originalPrice: Double = 0.0
 )
