@@ -22,6 +22,8 @@ val SUBCATEGOY_FILTERS: (String) -> String = {subcategoryId -> BASE_API_URL + "s
 
 val FILER_FACETS: (String, String) -> String = {subcategoryId, filterId -> BASE_API_URL + "search/category/facets/DK/$subcategoryId/$filterId"}
 
+//https://www.pricerunner.dk/dk/api/search-compare-gateway/public/product-detail/v0/offers/DK/3367856790
+
 val MAIN_CATEGORIES = mapOf(
     "t2" to "Computer & Software",
     "t1" to "Lyd & Billede",

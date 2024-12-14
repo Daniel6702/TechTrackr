@@ -24,7 +24,10 @@ fun AuthenticationScreen(
     val navController = LocalNavController.current
 
     fun navigateToHome() {
-        navController.navigate("home")
+        navController.navigate("home") {
+            popUpTo("auth") { inclusive = true }
+        }
+
     }
 
     Column(
@@ -111,9 +114,17 @@ fun AuthenticationScreen(
         Button(
             onClick = {
                 if (uiState.isLogin) {
-                    viewModel.loginUser { navigateToHome() }
+                    viewModel.loginUser { success ->
+                        if (success) {
+                            navigateToHome()
+                        } else {
+                            viewModel.updatePassword("")
+                        }
+                    }
                 } else {
-                    viewModel.signUpUser { navigateToHome() }
+                    viewModel.signUpUser { success ->
+                        if (success) navigateToHome()
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth()

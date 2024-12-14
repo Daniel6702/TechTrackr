@@ -2,6 +2,7 @@
 package com.example.techtrackr
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -58,12 +59,14 @@ class AuthViewModel(private val auth: FirebaseAuth, private val context: Context
             .addOnCompleteListener { task ->
                 setLoading(false)
                 if (task.isSuccessful) {
+                    Log.d("AuthViewModel", "User logged in: ${auth.currentUser?.uid}, isAnonymous: ${auth.currentUser?.isAnonymous}")
                     onResult(true)
                 } else {
                     toast(task.exception?.message ?: "Unknown error")
                     onResult(false)
                 }
             }
+
     }
 
     fun signUpUser(onResult: (Boolean) -> Unit) {
@@ -93,6 +96,8 @@ class AuthViewModel(private val auth: FirebaseAuth, private val context: Context
                 setLoading(false)
                 if (task.isSuccessful) {
                     toast("Sign-up successful")
+                    Log.d("AuthViewModel", "User signed up: ${auth.currentUser?.uid}, isAnonymous: ${auth.currentUser?.isAnonymous}")
+
                     // **Key Modification:** Switch to login mode after successful registration
                     _uiState.value = _uiState.value.copy(isLogin = true, email = "", password = "")
                     onResult(true)
@@ -109,19 +114,21 @@ class AuthViewModel(private val auth: FirebaseAuth, private val context: Context
             .addOnCompleteListener { task ->
                 setLoading(false)
                 if (task.isSuccessful) {
+                    Log.d("AuthViewModel", "User logged in as guest: ${auth.currentUser?.uid}, isAnonymous: ${auth.currentUser?.isAnonymous}")
                     onResult(true)
                 } else {
                     toast(task.exception?.message ?: "Unknown error")
                     onResult(false)
                 }
             }
+
     }
 
     private fun setLoading(loading: Boolean) {
         _uiState.value = _uiState.value.copy(isLoading = loading)
     }
 
-    private fun toast(message: String) {
+    fun toast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 

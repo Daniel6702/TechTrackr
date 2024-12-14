@@ -67,6 +67,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -107,4 +108,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
     implementation("androidx.compose.material:material-icons-extended:1.5.1")
+
+    implementation(platform("com.google.firebase:firebase-bom:31.2.0"))
 }
