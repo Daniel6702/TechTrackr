@@ -27,6 +27,9 @@ class HomeViewModel : ViewModel() {
     var hotProducts by mutableStateOf<List<Product>>(emptyList())
         private set
 
+    var searchResults by mutableStateOf<List<Product>>(emptyList())
+        private set
+
     init {
         loadDeals()
         loadHotProducts()
@@ -35,11 +38,16 @@ class HomeViewModel : ViewModel() {
     fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery
         Log.d("HomeViewModel", "Search query changed: $newQuery")
+
+        // Trigger search when query changes
+        performSearch()
     }
 
-    suspend fun performSearch() {
-        Log.d("HomeViewModel", "Performing search for: ${_searchQuery.value}")
-        // Implement search logic if needed
+    fun performSearch() {
+        // Filter products based on search query
+        val query = _searchQuery.value.lowercase()
+        searchResults = deals.filter { it.name.lowercase().contains(query) } + hotProducts.filter { it.name.lowercase().contains(query) }
+        Log.d("HomeViewModel", "Search query: $query, Found ${searchResults.size} products")
     }
 
     private fun loadDeals() {

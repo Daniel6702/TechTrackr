@@ -67,7 +67,11 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
+    
     implementation(libs.firebase.firestore.ktx)
+    implementation("androidx.compose.ui:ui:1.6.0") // Latest Compose UI
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1") // Latest lifecycle-compose
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -91,7 +95,6 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
     // Jetpack Compose
-    implementation("androidx.compose.ui:ui:1.4.3")
     implementation("androidx.compose.material3:material3:1.1.0")
     implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
     debugImplementation("androidx.compose.ui:ui-tooling:1.4.3")
