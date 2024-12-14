@@ -41,13 +41,26 @@ fun HomeScreen(
                 SearchBar(
                     query = homeViewModel.searchQuery,
                     onQueryChange = { query -> homeViewModel.onSearchQueryChanged(query) },
-                    onSearch = {
-                        runBlocking {
-                            homeViewModel.performSearch()
-                        }
-                    },
+                    onSearch = { homeViewModel.performSearch() },
                     modifier = Modifier.fillMaxWidth()
                 )
+            }
+
+            // Display Search Results
+            item {
+                val searchResults = homeViewModel.searchResults
+                if (searchResults.isEmpty()) {
+                    Text(text = "No products found.", style = MaterialTheme.typography.bodyMedium)
+                } else {
+                    LazyRow {
+                        items(searchResults) { product ->
+                            ProductCard(product = product) {
+                                val subcategoryId = product.category.id.removePrefix("cl")
+                                navController.navigate("product/$subcategoryId/${product.id}")
+                            }
+                        }
+                    }
+                }
             }
 
             // Deals Section
