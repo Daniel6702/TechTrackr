@@ -21,7 +21,10 @@ data class Product(
     val previewMerchants: PreviewMerchants?
 )
 
-data class PdPrice(val amount: String, val currency: String)
+data class PdPrice(
+    val amount: String = "",
+    val currency: String = ""
+)
 data class Category(val id: String, val name: String, val url: String?)
 data class Image(val id: String?, val url: String?, val path: String, val description: String?)
 data class Rating(val numberOfRatings: Int?, val averageRating: String?, val count: Int?, val average: String?)

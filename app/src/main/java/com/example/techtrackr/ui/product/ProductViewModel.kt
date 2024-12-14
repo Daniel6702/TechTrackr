@@ -15,6 +15,8 @@ import com.example.techtrackr.data.model.Ribbon
 import com.example.techtrackr.data.repository.ProductRepository
 import com.example.techtrackr.data.remote.NetworkModule
 import com.example.techtrackr.data.shared.SharedDataViewModel
+import com.example.techtrackr.ui.watchlist.WatchlistProduct
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -199,17 +201,19 @@ class ProductViewModel(
             .collection("watchlist")
             .document(product.id)
 
+        val watchlistProduct = WatchlistProduct(
+            name = product.name,
+            url = product.url,
+            categoryID = product.category.id,
+            productID = product.id,
+            description = product.description,
+            lowestPrice = product.lowestPrice,
+            imageUrl = product.image?.path,
+            timestamp = Timestamp.now()
+        )
+
         watchlistDocRef.set(
-            mapOf(
-                "name" to product.name,
-                "url" to product.url,
-                "categoryID" to product.category.id,
-                "productID" to product.id,
-                "description" to product.description,
-                "lowestPrice" to product.lowestPrice,
-                "imageUrl" to product.image?.path, // Adjust based on your image URL structure
-                "timestamp" to com.google.firebase.Timestamp.now()
-            )
+            watchlistProduct
         )
             .addOnSuccessListener {
                 _isInWatchlist.value = true
