@@ -98,7 +98,7 @@ fun ProductContent(productViewModel: ProductViewModel) {
                             }
                         }
 
-                        //Watchlist Button
+                        // Watchlist Button
                         item {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -120,8 +120,7 @@ fun ProductContent(productViewModel: ProductViewModel) {
                             }
                         }
 
-
-                        // Product Name & Article
+                        // Product Name & Description
                         item {
                             Column(
                                 modifier = Modifier.fillMaxWidth()
@@ -145,7 +144,20 @@ fun ProductContent(productViewModel: ProductViewModel) {
                         // Sellers (Offers) Section below Images
                         val offers = productListings?.offers.orEmpty()
                         val merchantsMap = productListings?.merchants.orEmpty()
-                        if (offers.isNotEmpty()) {
+
+                        // *** Begin: Process Offers to Remove Duplicates and Sort by Price ***
+                        val uniqueSortedOffers = offers
+                            .filter { it.merchantId != null && it.price?.amount != null }
+                            .groupBy { it.merchantId }
+                            .mapNotNull { (_, merchantOffers) ->
+                                merchantOffers.minByOrNull { offer ->
+                                    offer.price?.amount?.toDoubleOrNull() ?: Double.MAX_VALUE
+                                }
+                            }
+                            .sortedBy { it.price?.amount?.toDoubleOrNull() ?: Double.MAX_VALUE }
+                        // *** End: Processing Offers ***
+
+                        if (uniqueSortedOffers.isNotEmpty()) {
                             item {
                                 Text(
                                     text = "Sellers",
@@ -154,7 +166,7 @@ fun ProductContent(productViewModel: ProductViewModel) {
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
-                            items(offers.take(visibleOffersCount)) { offer ->
+                            items(uniqueSortedOffers.take(visibleOffersCount)) { offer ->
                                 val merchant = merchantsMap[offer.merchantId]
                                 if (merchant != null) {
                                     OfferCard(
@@ -165,11 +177,11 @@ fun ProductContent(productViewModel: ProductViewModel) {
                             }
 
                             // Show "Show More" button if there are more offers to display
-                            if (visibleOffersCount < offers.size) {
+                            if (visibleOffersCount < uniqueSortedOffers.size) {
                                 item {
                                     Button(
                                         onClick = {
-                                            visibleOffersCount = (visibleOffersCount + 3).coerceAtMost(offers.size)
+                                            visibleOffersCount = (visibleOffersCount + 3).coerceAtMost(uniqueSortedOffers.size)
                                         },
                                         modifier = Modifier
                                             .fillMaxWidth()

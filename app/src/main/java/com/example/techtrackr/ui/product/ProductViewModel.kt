@@ -188,7 +188,7 @@ class ProductViewModel(
             _productDetailsState.value,
             _productListingsState.value,
             subcategoryId = _productDetailsState.value?.category?.id ?: "",
-            productId = _productDetailsState.value?.product?.id ?: ""
+            productId = _productDetailsState.value?.product?.id ?: "",
         ) ?: run {
             _errorMessage.value = "Product information is incomplete."
             return
@@ -206,6 +206,7 @@ class ProductViewModel(
                 "categoryID" to product.category.id,
                 "productID" to product.id,
                 "description" to product.description,
+                "lowestPrice" to product.lowestPrice,
                 "imageUrl" to product.image?.path, // Adjust based on your image URL structure
                 "timestamp" to com.google.firebase.Timestamp.now()
             )
