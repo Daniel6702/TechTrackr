@@ -16,7 +16,11 @@ val PRODUCT_DETAILS: (String, String) -> String = { subcategoryId, productId -> 
 
 val PRODUCT_LISTINGS: (String) -> String = {productId -> BASE_API_URL + "product-detail/v0/offers/DK/$productId?af_ORIGIN=NATIONAL&af_ITEM_CONDITION=NEW,UNKNOWN&sortByPreset=PRICE"}
 
+val SUBCATEGORY_PRODUCTS: (String, String) -> String = {subcategoryId, parameters -> BASE_API_URL + "search/category/v3/DK/$subcategoryId?$parameters" }
 
+val SUBCATEGOY_FILTERS: (String) -> String = {subcategoryId -> BASE_API_URL + "search/category/filters/DK/$subcategoryId?showAll=true"}
+
+val FILER_FACETS: (String, String) -> String = {subcategoryId, filterId -> BASE_API_URL + "search/category/facets/DK/$subcategoryId/$filterId"}
 
 val MAIN_CATEGORIES = mapOf(
     "t2" to "Computer & Software",
