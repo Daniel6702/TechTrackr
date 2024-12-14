@@ -38,7 +38,7 @@ fun AppNavHost(
         }
 
         composable("profile") {
-            ProfileScreen(onLogout = { auth.signOut() })
+            ProfileScreen(auth = auth)
         }
 
         composable(
