@@ -5,11 +5,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -23,7 +27,17 @@ fun ProductContent(productViewModel: ProductViewModel) {
     val productDetails by productViewModel.productDetailsState.collectAsState()
     val productListings by productViewModel.productListingsState.collectAsState()
 
-    CommonNavigationLayout(title = productDetails?.product?.name ?: "Product") { paddingValues ->
+    val isInWatchlist by productViewModel.isInWatchlist.collectAsState()
+
+    val title = productDetails?.product?.name?.let {
+        if (it.length > 20) {
+            it.substring(0, 20) + "..."
+        } else {
+            it
+        }
+    }
+
+    CommonNavigationLayout(title = title ?: "Product") { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -84,7 +98,29 @@ fun ProductContent(productViewModel: ProductViewModel) {
                             }
                         }
 
-                        // Product Name & Article
+                        // Watchlist Button
+                        item {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                IconButton(onClick = {
+                                    if (isInWatchlist) {
+                                        productViewModel.removeFromWatchlist()
+                                    } else {
+                                        productViewModel.addToWatchlist()
+                                    }
+                                }) {
+                                    Icon(
+                                        imageVector = if (isInWatchlist) Icons.Filled.Star else Icons.Outlined.Star,
+                                        contentDescription = if (isInWatchlist) "Remove from Watchlist" else "Add to Watchlist",
+                                        tint = if (isInWatchlist) Color.Green else Color.Gray
+                                    )
+                                }
+                            }
+                        }
+
+                        // Product Name & Description
                         item {
                             Column(
                                 modifier = Modifier.fillMaxWidth()
@@ -108,7 +144,20 @@ fun ProductContent(productViewModel: ProductViewModel) {
                         // Sellers (Offers) Section below Images
                         val offers = productListings?.offers.orEmpty()
                         val merchantsMap = productListings?.merchants.orEmpty()
-                        if (offers.isNotEmpty()) {
+
+                        // *** Begin: Process Offers to Remove Duplicates and Sort by Price ***
+                        val uniqueSortedOffers = offers
+                            .filter { it.merchantId != null && it.price?.amount != null }
+                            .groupBy { it.merchantId }
+                            .mapNotNull { (_, merchantOffers) ->
+                                merchantOffers.minByOrNull { offer ->
+                                    offer.price?.amount?.toDoubleOrNull() ?: Double.MAX_VALUE
+                                }
+                            }
+                            .sortedBy { it.price?.amount?.toDoubleOrNull() ?: Double.MAX_VALUE }
+                        // *** End: Processing Offers ***
+
+                        if (uniqueSortedOffers.isNotEmpty()) {
                             item {
                                 Text(
                                     text = "Sellers",
@@ -117,7 +166,7 @@ fun ProductContent(productViewModel: ProductViewModel) {
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
-                            items(offers.take(visibleOffersCount)) { offer ->
+                            items(uniqueSortedOffers.take(visibleOffersCount)) { offer ->
                                 val merchant = merchantsMap[offer.merchantId]
                                 if (merchant != null) {
                                     OfferCard(
@@ -128,11 +177,11 @@ fun ProductContent(productViewModel: ProductViewModel) {
                             }
 
                             // Show "Show More" button if there are more offers to display
-                            if (visibleOffersCount < offers.size) {
+                            if (visibleOffersCount < uniqueSortedOffers.size) {
                                 item {
                                     Button(
                                         onClick = {
-                                            visibleOffersCount = (visibleOffersCount + 3).coerceAtMost(offers.size)
+                                            visibleOffersCount = (visibleOffersCount + 3).coerceAtMost(uniqueSortedOffers.size)
                                         },
                                         modifier = Modifier
                                             .fillMaxWidth()
