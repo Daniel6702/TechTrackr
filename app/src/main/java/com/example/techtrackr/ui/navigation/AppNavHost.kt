@@ -1,5 +1,6 @@
 package com.example.techtrackr.ui.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -11,8 +12,8 @@ import com.example.techtrackr.AuthViewModel
 import com.example.techtrackr.AuthViewModelFactory
 import com.example.techtrackr.AuthenticationScreen
 import com.example.techtrackr.ui.category.CategoryPage
+import com.example.techtrackr.ui.category.CategoryScreen
 import com.example.techtrackr.ui.home.HomeScreen
-import com.example.techtrackr.ui.navigation.CommonNavigationLayout
 import com.example.techtrackr.ui.product.ProductPage
 import com.example.techtrackr.ui.profile.ProfileScreen
 import com.example.techtrackr.ui.watchlist.WatchlistScreen
@@ -46,7 +47,13 @@ fun AppNavHost(
             arguments = listOf(navArgument("categoryId") { type = NavType.StringType })
         ) { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
-            CategoryPage(categoryId)
+            if (categoryId[0] == 't') {
+                CategoryPage(categoryId = categoryId)
+                Log.d("AppNavHost","Category ${categoryId}")
+            } else if (categoryId[0] == 'c') {
+                CategoryScreen(categoryId = categoryId)
+                Log.d("AppNavHost","Category ${categoryId}")
+            }
         }
 
         composable("watchlist") {

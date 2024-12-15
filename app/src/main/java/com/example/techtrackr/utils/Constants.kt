@@ -22,9 +22,9 @@ val PRICE_HISTORY: (String) -> String = {productId -> BASE_API_URL + "pricehisto
 
 val SUBCATEGORY_PRODUCTS: (String, String) -> String = {subcategoryId, parameters -> BASE_API_URL + "search/category/v3/DK/$subcategoryId?$parameters" }
 
-val SUBCATEGOY_FILTERS: (String) -> String = {subcategoryId -> BASE_API_URL + "search/category/filters/DK/$subcategoryId?showAll=true"}
+val SUBCATEGORY_FILTERS: (String) -> String = {subcategoryId -> BASE_API_URL + "search/category/filters/DK/$subcategoryId?showAll=true"}
 
-val FILER_FACETS: (String, String) -> String = {subcategoryId, filterId -> BASE_API_URL + "search/category/facets/DK/$subcategoryId/$filterId"}
+val FILTER_FACETS: (String, String) -> String = {subcategoryId, filterId -> BASE_API_URL + "search/category/facets/DK/$subcategoryId/$filterId"}
 
 //https://www.pricerunner.dk/dk/api/search-compare-gateway/public/product-detail/v0/offers/DK/3367856790
 
