@@ -111,7 +111,7 @@ class PriceMonitorWorker(
         val builder = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(R.drawable.ic_price_drop)
             .setContentTitle("Price Drop Alert!")
-            .setContentText("${product.name} is now \$${"%.2f".format(currentPrice)}, down from \$${"%.2f".format(originalPrice)}.")
+            .setContentText("${product.name} is now DKK ${"%.2f".format(currentPrice)}, down from DKK ${"%.2f".format(originalPrice)}.")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
 

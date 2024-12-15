@@ -9,12 +9,12 @@ import java.util.concurrent.TimeUnit
 class TechtrackrApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        //enqueuePriceMonitorWorker()
+        enqueuePriceMonitorWorker()
     }
 
     private fun enqueuePriceMonitorWorker() {
         val oneTimeRequest = OneTimeWorkRequestBuilder<PriceMonitorWorker>()
-            .setInitialDelay(15, TimeUnit.SECONDS) // 15-second delay for testing
+            .setInitialDelay(15, TimeUnit.SECONDS)
             .build()
         WorkManager.getInstance(this).enqueue(oneTimeRequest)
     }
