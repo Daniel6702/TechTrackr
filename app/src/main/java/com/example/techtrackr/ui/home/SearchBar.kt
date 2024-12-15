@@ -37,13 +37,16 @@ fun SearchBar(
             Icon(
                 imageVector = Icons.Filled.Search,
                 contentDescription = "Search Icon",
-                tint = MaterialTheme.colorScheme.onBackground
+                tint = MaterialTheme.colorScheme.onBackground // Match theme's text/icon color
             )
         },
         colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color(0xFFEDE7F6),
+            containerColor = Color(0xFFEDE7F6), // Always light
             focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
+            unfocusedIndicatorColor = Color.Transparent,
+            cursorColor = MaterialTheme.colorScheme.onBackground, // Highlight cursor
+            focusedTextColor = MaterialTheme.colorScheme.onBackground,
+
         ),
         shape = RoundedCornerShape(16.dp),
         modifier = modifier,

@@ -37,6 +37,7 @@ fun DrawerContent(
         Text(
             text = "Categories",
             style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally)
@@ -70,7 +71,8 @@ fun DrawerContent(
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "Home",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
 
@@ -115,7 +117,8 @@ fun DrawerContent(
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "Watchlist",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
 

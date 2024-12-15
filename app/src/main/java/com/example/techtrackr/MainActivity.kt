@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            TechtrackrTheme {
+            TechtrackrTheme(dynamicColor = false) {
                 val navController = rememberNavController()
                 val sharedDataViewModel: SharedDataViewModel = viewModel()
 
