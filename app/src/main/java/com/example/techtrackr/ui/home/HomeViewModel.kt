@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.techtrackr.data.model.Product
+import com.example.techtrackr.data.model.ProductDetailsResponse
 import com.example.techtrackr.data.model.SearchResponse
 import com.example.techtrackr.data.repository.CategoryRepository
 import com.example.techtrackr.data.remote.NetworkModule
@@ -28,10 +29,7 @@ class HomeViewModel : ViewModel() {
     var hotProducts by mutableStateOf<List<Product>>(emptyList())
         private set
 
-    var searchResults by mutableStateOf<SearchResponse>()
-        private set
-
-
+    var searchResults: SearchResponse? = null
 
     init {
         loadDeals()
@@ -48,6 +46,7 @@ class HomeViewModel : ViewModel() {
 
     fun performSearch() {
         val query = _searchQuery.value.lowercase()
+        searchResults = repository.getSearch(query)
 
         viewModelScope.launch {
             try {
