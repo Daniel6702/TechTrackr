@@ -18,6 +18,7 @@ import com.example.techtrackr.ui.navigation.CommonNavigationLayout
 import com.example.techtrackr.ui.navigation.LocalNavController
 import com.example.techtrackr.ui.product.ProductCard
 import kotlinx.coroutines.runBlocking
+import kotlin.reflect.KProperty
 
 @Composable
 fun HomeScreen(
@@ -52,15 +53,10 @@ fun HomeScreen(
             item {
                 val products = homeViewModel.searchProducts
 
-                Text(text = "Search Results", style = MaterialTheme.typography.titleMedium)
-                Spacer(modifier = Modifier.height(8.dp))
-
                 if (products.isEmpty()) {
-                    Text(
-                        text = "No products found.",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
                 } else {
+                    Text(text = "Search Results", style = MaterialTheme.typography.titleMedium)
+                    Spacer(modifier = Modifier.height(8.dp))
                     LazyRow {
                         items(products) { product ->
                             SearchProductCard(searchProduct = product) { clickedProduct ->
@@ -136,4 +132,3 @@ fun HomeScreen(
         }
     }
 }
-

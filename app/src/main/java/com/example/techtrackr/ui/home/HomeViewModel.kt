@@ -7,12 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.techtrackr.data.model.Product
-import com.example.techtrackr.data.model.ProductDetailsResponse
 import com.example.techtrackr.data.model.SearchProduct
-import com.example.techtrackr.data.model.SearchResponse
 import com.example.techtrackr.data.repository.CategoryRepository
 import com.example.techtrackr.data.remote.NetworkModule
 import com.example.techtrackr.utils.ALLOWED_CATEGORY_IDS
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
@@ -33,6 +32,10 @@ class HomeViewModel : ViewModel() {
     var searchProducts: List<SearchProduct> by mutableStateOf(emptyList())
         private set
 
+    // Constants for retry mechanism
+    private val MAX_RETRIES = 2
+    private val RETRY_DELAY_MS = 1000L
+
     init {
         loadDeals()
         loadHotProducts()
@@ -41,8 +44,8 @@ class HomeViewModel : ViewModel() {
     fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery
         val len = newQuery.length
-        //if len of query is 0, reset search
-        if (newQuery.isEmpty() or newQuery.isBlank() or (len<=1)) {
+        // If length of query is 0, reset search
+        if (newQuery.isEmpty() || newQuery.isBlank() || len <= 1) {
             searchProducts = emptyList()
             return
         }
@@ -72,37 +75,72 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-
     private fun loadDeals() {
-        Log.d("HomeViewModel", "LOADING DEALS")
         viewModelScope.launch {
-            try {
-                val response = repository.getDeals()
-                Log.d("HomeViewModel", "Response: $response")
-                // Filter the products by allowed category IDs
-                val filteredDeals = response.products.filter { product ->
-                    ALLOWED_CATEGORY_IDS.contains(product.category.id)
+            var attempt = 0
+            while (attempt <= MAX_RETRIES) {
+                try {
+                    Log.d("HomeViewModel", "Loading deals, attempt ${attempt + 1}")
+                    val response = repository.getDeals()
+                    // Filter the products by allowed category IDs
+                    val filteredDeals = response.products.filter { product ->
+                        ALLOWED_CATEGORY_IDS.contains(product.category.id)
+                    }
+                    if (filteredDeals.isNotEmpty()) {
+                        deals = filteredDeals
+                        Log.d("HomeViewModel", "Deals loaded successfully with ${deals.size} items")
+                        break
+                    } else {
+                        Log.d("HomeViewModel", "Deals empty on attempt ${attempt + 1}")
+                        if (attempt < MAX_RETRIES) {
+                            delay(RETRY_DELAY_MS)
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Log.e("HomeViewModel", "Error loading deals on attempt ${attempt + 1}: ${e.message}")
+                    if (attempt >= MAX_RETRIES) {
+                        deals = emptyList()
+                    } else {
+                        delay(RETRY_DELAY_MS)
+                    }
                 }
-                deals = filteredDeals
-            } catch (e: Exception) {
-                e.printStackTrace()
-                deals = emptyList()
+                attempt++
             }
         }
     }
 
     private fun loadHotProducts() {
         viewModelScope.launch {
-            try {
-                val response = repository.getHotProducts()
-                // Filter by allowed categories
-                val filteredHot = response.products.filter { product ->
-                    ALLOWED_CATEGORY_IDS.contains(product.category.id)
+            var attempt = 0
+            while (attempt <= MAX_RETRIES) {
+                try {
+                    Log.d("HomeViewModel", "Loading hot products, attempt ${attempt + 1}")
+                    val response = repository.getHotProducts()
+                    // Filter by allowed categories
+                    val filteredHot = response.products.filter { product ->
+                        ALLOWED_CATEGORY_IDS.contains(product.category.id)
+                    }
+                    if (filteredHot.isNotEmpty()) {
+                        hotProducts = filteredHot
+                        Log.d("HomeViewModel", "Hot products loaded successfully with ${hotProducts.size} items")
+                        break
+                    } else {
+                        Log.d("HomeViewModel", "Hot products empty on attempt ${attempt + 1}")
+                        if (attempt < MAX_RETRIES) {
+                            delay(RETRY_DELAY_MS)
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Log.e("HomeViewModel", "Error loading hot products on attempt ${attempt + 1}: ${e.message}")
+                    if (attempt >= MAX_RETRIES) {
+                        hotProducts = emptyList()
+                    } else {
+                        delay(RETRY_DELAY_MS)
+                    }
                 }
-                hotProducts = filteredHot
-            } catch (e: Exception) {
-                e.printStackTrace()
-                hotProducts = emptyList()
+                attempt++
             }
         }
     }
