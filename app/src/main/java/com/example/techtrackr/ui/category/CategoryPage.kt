@@ -10,12 +10,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp // Import for font size adjustments
 import com.example.techtrackr.data.shared.LocalSharedDataViewModel
 import com.example.techtrackr.ui.navigation.CommonNavigationLayout
 import com.example.techtrackr.ui.navigation.LocalNavController
 import com.example.techtrackr.ui.product.PopularProductCard
-import com.example.techtrackr.ui.product.ProductCard
 
 @Composable
 fun CategoryPage(
@@ -66,11 +64,7 @@ fun CategoryPage(
                         ChildCategoryCard(
                             childCategory = child,
                             onClick = { clickedCategory ->
-                                if (clickedCategory.id.startsWith("t")) {
-                                    navController.navigate("category/${clickedCategory.id}")
-                                } else if (clickedCategory.id.startsWith("cl")) {
-                                    // Navigate to product page (not implemented yet)
-                                }
+                                navController.navigate("category/${clickedCategory.id}")
                             }
                         )
                     }
@@ -102,9 +96,7 @@ fun CategoryPage(
                     ) {
                         items(popularProducts) { product ->
                             PopularProductCard(product = product) {
-                                val subcategoryId = product.category.id.removePrefix("cl")
-                                navController.navigate("product/$subcategoryId/${product.id}")
-
+                                navController.navigate("product/$categoryId/${product.id}")
                             }
                         }
                     }
