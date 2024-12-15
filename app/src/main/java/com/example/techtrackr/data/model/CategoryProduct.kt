@@ -8,7 +8,7 @@ data class CategoryProductsResponse (
 data class CategoryProduct(
     val id: String,
     val name: String,
-    val description: String,
+    val description: String?,
     val url: String,
     val lowestPrice: PdPrice?,
     val image: Image?,

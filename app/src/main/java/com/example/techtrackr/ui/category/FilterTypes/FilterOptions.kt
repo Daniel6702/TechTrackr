@@ -45,7 +45,9 @@ fun FilterOptions(
             manufacturers.add(manufacturerId)
         }
 
-        onParameterChange(manufacturers.joinToString(","))
+        onParameterChange(manufacturers
+            .filter{ it.isNotBlank() }
+            .joinToString(","))
         Log.d("FilterItem", "Modified $manufacturerId in parameters: $manufacturers")
     }
 
