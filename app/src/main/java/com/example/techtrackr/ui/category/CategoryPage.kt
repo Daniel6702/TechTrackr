@@ -50,7 +50,7 @@ fun CategoryPage(
         } else {
             Column(modifier = Modifier.padding(paddingValues)) {
                 Text(
-                    text = "Subcategories",
+                    text = "Under Kategorier",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontSize = MaterialTheme.typography.titleLarge.fontSize
                     ),
@@ -79,7 +79,7 @@ fun CategoryPage(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Popular Products",
+                    text = "Populære Produkter",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontSize = MaterialTheme.typography.titleLarge.fontSize
                     ),

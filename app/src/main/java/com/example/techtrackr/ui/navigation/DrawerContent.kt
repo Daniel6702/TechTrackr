@@ -35,7 +35,7 @@ fun DrawerContent(
         Spacer(modifier = Modifier.height(48.dp))
 
         Text(
-            text = "Categories",
+            text = "Kategorier",
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
@@ -65,7 +65,7 @@ fun DrawerContent(
         ) {
             Icon(
                 imageVector = Icons.Filled.Home,
-                contentDescription = "Home",
+                contentDescription = "Hjem",
                 tint = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.width(16.dp))

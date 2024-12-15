@@ -50,7 +50,7 @@ fun ProfileScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "Profile", style = MaterialTheme.typography.titleLarge) },
+                title = { Text(text = "Profil", style = MaterialTheme.typography.titleLarge) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -161,7 +161,7 @@ fun ProfileScreen(
 
                 // Action Buttons
                 ActionButton(
-                    text = "Change Password",
+                    text = "Ændre adgangskode",
                     icon = Icons.Default.Lock,
                     onClick = { showChangePasswordDialog = true }
                 )
@@ -169,7 +169,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 ActionButton(
-                    text = "Delete Account",
+                    text = "Slet konto",
                     icon = Icons.Default.Delete,
                     onClick = { showDeleteAccountDialog = true },
                     backgroundColor = MaterialTheme.colorScheme.errorContainer,
@@ -179,7 +179,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 ActionButton(
-                    text = "Log Out",
+                    text = "Log ud",
                     icon = Icons.Default.ExitToApp,
                     onClick = {
                         auth.signOut()

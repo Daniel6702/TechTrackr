@@ -29,7 +29,7 @@ fun HomeScreen(
     val recentlyViewed by sharedDataViewModel.recentlyViewed.collectAsState()
 
     CommonNavigationLayout(
-        title = "Home"
+        title = "Hjem"
     ) { paddingValues ->
         // Use a LazyColumn for scrolling
         LazyColumn(
@@ -73,7 +73,7 @@ fun HomeScreen(
 
             // Deals Section
             item {
-                Text(text = "Deals", style = MaterialTheme.typography.titleMedium)
+                Text(text = "Dagens tilbud", style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(8.dp))
                 val deals = homeViewModel.deals
                 if (deals.isEmpty()) {
@@ -92,7 +92,7 @@ fun HomeScreen(
 
             // Hot Products Section
             item {
-                Text(text = "Hot Products", style = MaterialTheme.typography.titleMedium)
+                Text(text = "Populære produkter", style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(8.dp))
                 val hotProducts = homeViewModel.hotProducts
                 if (hotProducts.isEmpty()) {
@@ -111,7 +111,7 @@ fun HomeScreen(
 
             // Recently Looked At Section
             item {
-                Text(text = "Recently Looked At", style = MaterialTheme.typography.titleMedium)
+                Text(text = "Senest besøgte produkter", style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(8.dp))
                 if (recentlyViewed.isEmpty()) {
                     Text(

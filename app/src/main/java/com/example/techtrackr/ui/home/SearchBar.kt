@@ -32,7 +32,7 @@ fun SearchBar(
         value = query,
         onValueChange = onQueryChange,
         singleLine = true,
-        placeholder = { Text("Search...") },
+        placeholder = { Text("Søg...") },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Search,

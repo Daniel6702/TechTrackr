@@ -163,7 +163,7 @@ fun ProductContent(productViewModel: ProductViewModel) {
                         if (uniqueSortedOffers.isNotEmpty()) {
                             item {
                                 Text(
-                                    text = "Sellers",
+                                    text = "Sælgere ",
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -190,7 +190,7 @@ fun ProductContent(productViewModel: ProductViewModel) {
                                             .fillMaxWidth()
                                             .padding(vertical = 8.dp)
                                     ) {
-                                        Text(text = "Show More")
+                                        Text(text = "Vis Flere")
                                     }
                                 }
                             }
@@ -201,7 +201,7 @@ fun ProductContent(productViewModel: ProductViewModel) {
                         if (!article.isNullOrEmpty()) {
                             item {
                                 ExpandableSection(
-                                    title = "Article",
+                                    title = "Beskrivelse",
                                     content = {
                                         Text(
                                             text = article,
@@ -217,7 +217,7 @@ fun ProductContent(productViewModel: ProductViewModel) {
                         if (specs.isNotEmpty()) {
                             item {
                                 ExpandableSection(
-                                    title = "Specifications",
+                                    title = "Specifikationer",
                                     content = {
                                         specs.forEach { section ->
                                             Text(
@@ -245,7 +245,7 @@ fun ProductContent(productViewModel: ProductViewModel) {
                         if (review != null) {
                             item {
                                 ExpandableSection(
-                                    title = "Reviews",
+                                    title = "Anmeldelser",
                                     content = {
                                         Column {
                                             Text(
@@ -274,7 +274,7 @@ fun ProductContent(productViewModel: ProductViewModel) {
                         if (priceHistoryData != null) {
                             item {
                                 ExpandableSection(
-                                    title = "Price History",
+                                    title = "Pris Historik",
                                     content = {
                                         Column(
                                             modifier = Modifier.fillMaxWidth()
