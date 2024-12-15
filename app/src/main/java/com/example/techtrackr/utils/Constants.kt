@@ -12,6 +12,8 @@ const val DEALS_URL = BASE_API_URL + "search/deals/products/v3/DK?af_PRICE_DROP=
 
 const val HOT_PRODUCTS_URL = BASE_API_URL + "hot/products/v2/DK?size=70"
 
+val SEARCH_URL: (String) -> String = { searchquery -> "$BASE_API_URL/search/v5/DK?/$searchquery" }
+
 val PRODUCT_DETAILS: (String, String) -> String = { subcategoryId, productId -> BASE_API_URL + "productlistings/pl/initial/$subcategoryId-$productId/DK" }
 
 val PRODUCT_LISTINGS: (String) -> String = {productId -> BASE_API_URL + "product-detail/v0/offers/DK/$productId?af_ORIGIN=NATIONAL&af_ITEM_CONDITION=NEW,UNKNOWN&sortByPreset=PRICE"}

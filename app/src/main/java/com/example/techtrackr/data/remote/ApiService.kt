@@ -6,6 +6,7 @@ import com.example.techtrackr.data.model.PriceHistoryResponse
 import com.example.techtrackr.data.model.ProductDetailsResponse
 import com.example.techtrackr.data.model.ProductListingsResponse
 import com.example.techtrackr.data.model.ProductsResponse
+import com.example.techtrackr.data.model.SearchResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Url
@@ -31,4 +32,8 @@ interface ApiService {
 
     @GET
     suspend fun getPriceHistory(@Url url: String): Response<PriceHistoryResponse>
+
+    @GET
+    suspend fun getSearch(@Url url: String): SearchResponse
+
 }
