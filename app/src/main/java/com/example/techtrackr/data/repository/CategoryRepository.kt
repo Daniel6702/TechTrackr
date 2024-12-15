@@ -1,5 +1,6 @@
 package com.example.techtrackr.data.repository
 
+import android.util.Log
 import com.example.techtrackr.data.model.CategoryResponse
 import com.example.techtrackr.data.model.PopularProductsResponse
 import com.example.techtrackr.data.model.ProductsResponse
@@ -42,8 +43,10 @@ class CategoryRepository(private val apiService: ApiService) {
     }
 
     suspend fun getSearch(searchQuery: String): SearchResponse = withContext(Dispatchers.IO) {
+        val url = SEARCH_URL(searchQuery)
+        Log.d("CategoryRepository", "URL $url")
         retryOperation {
-            apiService.getSearch(SEARCH_URL(searchQuery))
+            apiService.getSearch(url)
         }
     }
 }

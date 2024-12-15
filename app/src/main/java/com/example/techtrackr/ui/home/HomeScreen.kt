@@ -11,6 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.techtrackr.data.model.Product
+import com.example.techtrackr.data.model.SearchProduct
 import com.example.techtrackr.data.shared.LocalSharedDataViewModel
 import com.example.techtrackr.ui.navigation.CommonNavigationLayout
 import com.example.techtrackr.ui.navigation.LocalNavController
@@ -48,20 +50,30 @@ fun HomeScreen(
 
             // Display Search Results
             item {
-                val searchResults = homeViewModel.searchResults
-                if (searchResults.isEmpty()) {
-                    Text(text = "No products found.", style = MaterialTheme.typography.bodyMedium)
+                val products = homeViewModel.searchProducts
+
+                Text(text = "Search Results", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (products.isEmpty()) {
+                    Text(
+                        text = "No products found.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 } else {
                     LazyRow {
-                        items(searchResults) { product ->
-                            ProductCard(product = product) {
-                                val subcategoryId = product.category.id.removePrefix("cl")
-                                navController.navigate("product/$subcategoryId/${product.id}")
+                        items(products) { product ->
+                            SearchProductCard(searchProduct = product) { clickedProduct ->
+                                val subcategoryId = clickedProduct.category?.id?.removePrefix("cl") ?: ""
+                                val productId = clickedProduct.id ?: ""
+                                navController.navigate("product/$subcategoryId/$productId")
                             }
                         }
                     }
                 }
             }
+
+
 
             // Deals Section
             item {
@@ -124,3 +136,4 @@ fun HomeScreen(
         }
     }
 }
+

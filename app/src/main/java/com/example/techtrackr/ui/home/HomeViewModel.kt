@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.techtrackr.data.model.Product
 import com.example.techtrackr.data.model.ProductDetailsResponse
+import com.example.techtrackr.data.model.SearchProduct
 import com.example.techtrackr.data.model.SearchResponse
 import com.example.techtrackr.data.repository.CategoryRepository
 import com.example.techtrackr.data.remote.NetworkModule
@@ -29,7 +30,8 @@ class HomeViewModel : ViewModel() {
     var hotProducts by mutableStateOf<List<Product>>(emptyList())
         private set
 
-    var searchResults: SearchResponse? = null
+    var searchProducts: List<SearchProduct> by mutableStateOf(emptyList())
+        private set
 
     init {
         loadDeals()
@@ -46,16 +48,16 @@ class HomeViewModel : ViewModel() {
 
     fun performSearch() {
         val query = _searchQuery.value.lowercase()
-        searchResults = repository.getSearch(query)
 
         viewModelScope.launch {
             try {
-                val response = repository.getSearch(searchQuery)
-                searchResults = response  // Assign SearchResponse from repository
-                Log.d("HomeViewModel", "Search query: $searchQuery, Found ${response.products?.size} products")
+                val response = repository.getSearch(query)
+                searchProducts = response.products.orEmpty()
+                Log.d("HomeViewModel", "Search query: $query, Found ${searchProducts.size} products")
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e("HomeViewModel", "Error performing search: ${e.message}")
+                searchProducts = emptyList()
             }
         }
     }
