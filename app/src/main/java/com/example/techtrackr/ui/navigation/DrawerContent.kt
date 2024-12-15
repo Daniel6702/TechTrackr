@@ -70,7 +70,7 @@ fun DrawerContent(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = "Home",
+                text = "Hjem",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )

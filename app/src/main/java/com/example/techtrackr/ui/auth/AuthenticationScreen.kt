@@ -37,7 +37,7 @@ fun AuthenticationScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = if (uiState.isLogin) "Login" else "Sign Up",
+            text = if (uiState.isLogin) "Log ind" else "Tilmeld dig",
             style = MaterialTheme.typography.headlineLarge
         )
 
@@ -90,7 +90,7 @@ fun AuthenticationScreen(
                     Box {
                         if (uiState.password.isEmpty()) {
                             Text(
-                                text = "Password",
+                                text = "Adgangskode",
                                 color = Color.Gray,
                                 style = MaterialTheme.typography.bodyMedium,
                                 modifier = Modifier.align(Alignment.CenterStart)
@@ -129,14 +129,14 @@ fun AuthenticationScreen(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = if (uiState.isLogin) "Login" else "Sign Up")
+            Text(text = if (uiState.isLogin) "Log ind" else "Tilmeld dig")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         // Toggle between login and signup
         TextButton(onClick = { viewModel.toggleLoginMode() }) {
-            Text(text = if (uiState.isLogin) "Don't have an account? Sign up" else "Already have an account? Login")
+            Text(text = if (uiState.isLogin) "Har du ikke en konto? Tilmeld dig" else "Har du allerede en konto? Log ind\n")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -146,7 +146,7 @@ fun AuthenticationScreen(
             onClick = { viewModel.loginAsGuest { navigateToHome() } },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Login as Guest")
+            Text("Log ind som Gæst")
         }
     }
 
