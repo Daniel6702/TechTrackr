@@ -40,6 +40,12 @@ class HomeViewModel : ViewModel() {
 
     fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery
+        val len = newQuery.length
+        //if len of query is 0, reset search
+        if (newQuery.isEmpty() or newQuery.isBlank() or (len<=1)) {
+            searchProducts = emptyList()
+            return
+        }
         Log.d("HomeViewModel", "Search query changed: $newQuery")
 
         // Trigger search when query changes
@@ -52,8 +58,12 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = repository.getSearch(query)
-                searchProducts = response.products.orEmpty()
-                Log.d("HomeViewModel", "Search query: $query, Found ${searchProducts.size} products")
+
+                searchProducts = response.products.orEmpty().filter { product ->
+                    product.category?.id in ALLOWED_CATEGORY_IDS
+                }
+
+                Log.d("HomeViewModel", "Search query: $query, Found ${searchProducts.size} products after filtering")
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e("HomeViewModel", "Error performing search: ${e.message}")
@@ -61,6 +71,7 @@ class HomeViewModel : ViewModel() {
             }
         }
     }
+
 
     private fun loadDeals() {
         Log.d("HomeViewModel", "LOADING DEALS")
