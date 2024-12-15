@@ -33,7 +33,7 @@ class HomeViewModel : ViewModel() {
         private set
 
     // Constants for retry mechanism
-    private val MAX_RETRIES = 2
+    private val MAX_RETRIES = 10
     private val RETRY_DELAY_MS = 1000L
 
     init {

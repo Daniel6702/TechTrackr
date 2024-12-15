@@ -44,6 +44,9 @@ fun ProfileScreen(
 
     val context = LocalContext.current
 
+    //val currentUser = auth.currentUser
+    //if (currentUser == null || currentUser.isAnonymous) {
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -117,6 +120,33 @@ fun ProfileScreen(
                         .padding(vertical = 8.dp)
                 )
 
+                if (auth.currentUser?.isAnonymous == true or (auth.currentUser == null)) {
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Must be logged in to view profile",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ActionButton(
+                        text = "Log Out",
+                        icon = Icons.Default.ExitToApp,
+                        onClick = {
+                            auth.signOut()
+                            navController.navigate("auth") {
+                                popUpTo("auth") { inclusive = true }
+                            }
+                        },
+                        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+
+                } else {
+
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Divider(
@@ -170,6 +200,7 @@ fun ProfileScreen(
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 )
+                }
             }
 
             // Change Password Dialog
