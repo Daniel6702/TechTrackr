@@ -4,7 +4,7 @@ data class FiltersResponse(
     val groups: List<FilterGroup>
 )
 
-data class FilterFacetsResponse(
+data class FilterFacetResponse(
     val facet: FilterFacet
 )
 

@@ -3,7 +3,7 @@ package com.example.techtrackr.data.remote
 import com.example.techtrackr.data.model.CategoryProductsResponse
 import com.example.techtrackr.data.model.CategoryResponse
 import com.example.techtrackr.data.model.FiltersResponse
-import com.example.techtrackr.data.model.FilterFacetsResponse
+import com.example.techtrackr.data.model.FilterFacetResponse
 import com.example.techtrackr.data.model.PopularProductsResponse
 import com.example.techtrackr.data.model.PriceHistoryResponse
 import com.example.techtrackr.data.model.ProductDetailsResponse
@@ -46,6 +46,6 @@ interface ApiService {
     suspend fun getCategoryFilters(@Url url: String): FiltersResponse
 
     @GET
-    suspend fun GetFilterFacets(@Url url: String): FilterFacetsResponse
+    suspend fun GetFilterFacets(@Url url: String): FilterFacetResponse
 
 }

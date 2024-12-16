@@ -3,7 +3,7 @@ package com.example.techtrackr.data.repository
 import android.util.Log
 import com.example.techtrackr.data.model.CategoryProductsResponse
 import com.example.techtrackr.data.model.CategoryResponse
-import com.example.techtrackr.data.model.FilterFacetsResponse
+import com.example.techtrackr.data.model.FilterFacetResponse
 import com.example.techtrackr.data.model.FiltersResponse
 import com.example.techtrackr.data.model.PopularProductsResponse
 import com.example.techtrackr.data.model.ProductsResponse
@@ -72,7 +72,7 @@ class CategoryRepository(private val apiService: ApiService) {
         }
     }
 
-    suspend fun getFilterFacet(categoryId: String, filterId: String): FilterFacetsResponse = withContext(Dispatchers.IO) {
+    suspend fun getFilterFacet(categoryId: String, filterId: String): FilterFacetResponse = withContext(Dispatchers.IO) {
         val url = FILTER_FACETS(categoryId, filterId)
         Log.d("CategoryRepository", "URL $url")
         retryOperation {
