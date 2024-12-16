@@ -25,6 +25,7 @@ fun CategoryScreen(
     val navController = LocalNavController.current
     val categoriesMap by sharedDataViewModel.categoriesState.collectAsState()
     val category = categoriesMap[categoryId]
+    val simpleCategoryID = categoryId.drop(2)
 
     val isDialogOpen = remember { mutableStateOf(false) }
     fun closeDialog() { isDialogOpen.value = false }
@@ -42,7 +43,7 @@ fun CategoryScreen(
             LazyColumn(modifier = Modifier.padding(paddingValues)) {
                 items(categoryViewModel.deals) { deal ->
                     CategoryProductCard(product = deal) {
-                        navController.navigate("product/$categoryId/${deal.id}")
+                        navController.navigate("product/$simpleCategoryID/${deal.id}")
                     }
                 }
             }
